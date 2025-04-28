@@ -3,6 +3,16 @@ import { GraffitiLocal } from "@graffiti-garden/implementation-local";
 import { GraffitiRemote } from "@graffiti-garden/implementation-remote";
 import { GraffitiPlugin } from "@graffiti-garden/wrapper-vue";
 import { onMounted } from "vue";
+import { defineAsyncComponent } from "vue";
+import { createRouter, createWebHashHistory } from "vue-router";
+import { Profile } from "./components/profile/profile.js"
+
+const router = createRouter({
+    history: createWebHashHistory(),
+    routes: [
+      { path: "/profile/", component: Profile },
+    ],
+  });
 
 createApp({
   data() {
@@ -54,6 +64,10 @@ createApp({
       addee: "",
       members: null,
     };
+  },
+
+  components: {
+    Profile: defineAsyncComponent(Profile),
   },
 
   methods: {
@@ -124,6 +138,9 @@ createApp({
     },
 
     async enterGroup(channel, groupName, admin, url, members) {
+      if(this.$router.currentRoute.value.path != '/') {
+        this.$router.back()
+      }
       if (!channel) return;
       this.inGroup = true;
       this.currentChannel = channel;
@@ -133,6 +150,21 @@ createApp({
       this.currentGroupAdmin = admin;
       this.currentGroupURL = url;
       this.members = members;
+      if (this.renameMode) {
+        const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
+        location.lastChild.remove();
+        location.lastChild.remove();
+        this.renameMode = null;
+        this.session = null;
+        this.oldGroupName = null;
+        this.newGroupName = null;
+      }
+      document.querySelector(".groupTools").style.display = "none";
+      if (this.editMode) {
+        this.editMode.parentElement.nextElementSibling.remove();
+        this.editMode.parentElement.nextElementSibling.remove();
+        this.editMode = null;
+      }
     },
 
     // exitGroup() {
@@ -367,4 +399,5 @@ createApp({
     graffiti: new GraffitiLocal(),
     // graffiti: new GraffitiRemote(),
   })
+  .use(router)
   .mount("#app");
