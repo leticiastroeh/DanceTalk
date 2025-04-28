@@ -1,0 +1,225 @@
+* {
+    font-family:
+        Roboto Flex,
+        Segoe UI,
+        sans-serif;
+}
+
+button,
+input {
+    margin: 3px;
+}
+
+input[type="text"] {
+    width: 300px;
+}
+
+:checked + input[type="text"] {
+    color: gray;
+    font-style: italic;
+    text-decoration: line-through;
+}
+
+fieldset {
+    display: contents;
+}
+
+#app {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-areas:
+      "chats messages";
+}
+
+#chatBar {
+    grid-area: chats;
+}
+
+#messageBar {
+    grid-area:  messages;
+    background-color: #F9F9F9;
+}
+
+#messageList {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#here {
+    height: 600px;
+    overflow: auto;
+    margin: 10px;
+    margin-top: 45px;
+    margin-bottom: 45px;
+}
+
+.message {
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px;
+    margin-left: -35px;
+    margin-right: 5px;
+    background-color: #EFEFEF;
+    border-radius: 10px;
+    width: fit-content;
+    max-width: 600px;
+    min-width: 100px;
+    min-height: 40px;
+    text-wrap: wrap;
+    box-shadow: 0px 0.5px 0.5px #404040c4;
+}
+
+.mine {
+    justify-self: flex-end;
+    padding-right: 35px;
+    position: relative;
+    min-height: 20px;
+}
+
+.plus {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+}
+
+.tools {
+    position: absolute;
+    top: 30px;
+    right: 2px;
+    background-color: #1B7A6D;
+    box-shadow: 0px 1px 2px #404040c4;
+    border-radius: 10px;
+}
+
+.tools > button {
+    display: block;
+    border: none;
+    color: white;
+    background-color: #1B7A6D;
+    height: 25px;
+    width: 60px;
+    cursor: pointer;
+}
+
+.groupTools {
+    position: absolute;
+    top: 5px;
+    right: 35px;
+    background-color: #1B7A6D;
+    box-shadow: 0px 1px 2px #404040c4;
+    border-radius: 10px;
+}
+
+.groupTools > button {
+    display: inline;
+    border: none;
+    color: white;
+    background-color: #1B7A6D;
+    height: 25px;
+    width: 65px;
+    cursor: pointer;
+}
+
+.mine > .author {
+    display: none;
+}
+
+.author {
+    color: #1B7A6D;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.group {
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px;
+    margin-left: -35px;
+    background-color: #EFEFEF;
+    border-radius: 10px;
+}
+
+.group > button {
+    border: none;
+    background-color: #EFEFEF;
+    font-size: 16px;
+    size: inherit;
+    cursor: pointer;
+    width: 100%;
+    line-height: 2;
+    text-align: left;
+}
+
+#textBar {
+    display: flex;
+    border: none;
+    background-color: #EFEFEF;
+    bottom: 0;
+    position: fixed;
+    bottom: 0;
+    left: 30%;
+    right: 0;
+    margin-left: 4px;
+}
+
+#textBar > input[type="text"] {
+    flex-grow: 1;
+    height: 35px;
+    border-radius: 10px;
+    border: none;
+    background-color: white;
+    padding-left: 10px;
+    vertical-align: middle;
+    align-items: center;
+    margin-top: 2px;
+    margin-bottom: -1px;
+    margin-right: 5px;
+    margin-left: -1px;
+    text-wrap: wrap;
+}
+
+.groupName {
+    align-content: center;
+    vertical-align: middle;
+    background-color: #EFEFEF;
+    padding-left: 10px;
+    font-size: 28px;
+    padding: 10px;
+    font-weight: 300;
+    position: fixed;
+    top: 0;
+    left: 30%;
+    margin-left: 4px;
+    right: 0;
+}
+
+.logout {
+    position: absolute;
+    right: 71%;
+    top: 35px
+}
+
+.empty {
+}
+
+h1 {
+    color: #1B7A6D;
+}
+
+.tools {
+    display: none;
+}
+
+.groupTools {
+    display: none;
+}
+
+.addForm {
+    position: absolute;
+    top: 10px;
+    right: 27%;
+}
+
+.addForm > input {
+    width: 100px;
+}
