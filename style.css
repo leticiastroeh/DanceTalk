@@ -26,7 +26,7 @@ fieldset {
 
 #app {
     display: grid;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: min(428px, 50vw) auto;
     grid-template-areas:
       "chats messages";
 }
@@ -38,6 +38,9 @@ fieldset {
 #messageBar {
     grid-area:  messages;
     background-color: #F9F9F9;
+    height: 90vh;
+    overflow: auto;
+    margin-top: 4vh;
 }
 
 #messageList {
@@ -46,11 +49,9 @@ fieldset {
 }
 
 #here {
-    height: 600px;
-    overflow: auto;
     margin: 10px;
-    margin-top: 45px;
-    margin-bottom: 45px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .message {
@@ -79,7 +80,46 @@ fieldset {
 .plus {
     position: absolute;
     right: 2px;
-    top: 2px;
+    top: 7px;
+    cursor: pointer;
+}
+
+.plus > button {
+    width: min-content;
+    border: none;
+    cursor: pointer;
+}
+
+.plus > button > img {
+    height: 12px;
+    cursor: pointer;
+}
+
+.plusBig {
+    position: absolute;
+    right: 2px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.plusBig > button {
+    width: min-content;
+    border: none;
+    cursor: pointer;
+}
+
+.plusBig > button > img {
+    height: 20px;
+    cursor: pointer;
+}
+
+#send {
+    border: none;
+    cursor: pointer;
+}
+
+#send > img {
+    width: 30px;
 }
 
 .tools {
@@ -159,9 +199,10 @@ fieldset {
     bottom: 0;
     position: fixed;
     bottom: 0;
-    left: 30%;
+    left: min(432px, 50vw + 5px);
     right: 0;
     margin-left: 4px;
+    height: max(5vh, 35px);
 }
 
 #textBar > input[type="text"] {
@@ -187,28 +228,43 @@ fieldset {
     padding-left: 10px;
     font-size: 28px;
     padding: 10px;
+    height: max(5vh, 30px);
     font-weight: 300;
     position: fixed;
     top: 0;
-    left: 30%;
+    left: min(432px, 50vw + 5px);
     margin-left: 4px;
     right: 0;
 }
 
 .logout {
     position: absolute;
-    right: 71%;
-    top: 35px
+    left: min(270px, calc(50vw - 160px));
+    top: 30px;
 }
+
+@media (max-width: 680px) {
+
+    #logoutButton {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .profile {
+        margin-left: 15px;
+        margin-bottom: 10px;
+    }
+
+    .logout {
+        position: absolute;
+        left: min(270px, calc(50vw - 86px));
+        top: 30px;
+    }
+
+  }
 
 .logout > button {
     margin-left: 5px;
-}
-
-.profileButton {
-    position: absolute;
-    right: 71%;
-    top: 35px
 }
 
 h1 {
@@ -231,4 +287,77 @@ h1 {
 
 .addForm > input {
     width: 100px;
+}
+
+.logout > button > img {
+    width: 13px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.logout > button {
+    font-size: 14px;
+    padding: 7px;
+    color: white;
+    background-color: #1B7A6D;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.login > img {
+    width: 13px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.login {
+    font-size: 14px;
+    padding: 7px;
+    color: white;
+    background-color: #1B7A6D;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    left: 270px;
+    top: 30px
+}
+
+.profile {
+    background-color: #1B7A6D;
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 10px;
+    padding: 7px;
+    cursor: pointer;
+}
+
+.profile > img {
+    width: 13px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.empty {
+    background-color: white !important;
+}
+
+#createGroupButton {
+    background-color: #1B7A6D;
+    color: white;
+    font-size: 14px;
+    padding: 7px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+#newGroupText {
+    height: 26px;
+    border-radius: 10px;
+    border: solid #1B7A6D 1px;
+    width: calc(100% - 85px);
+    padding-left: 5px;
 }

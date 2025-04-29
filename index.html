@@ -21,14 +21,14 @@
         <div id="app">
             <div id="chatBar">
                 <h1>Dance Talk</h1>
-                <button class="logout" v-if="!$graffitiSession.value" @click="$graffiti.login()">
-                    Log In
+                <button class="login" v-if="!$graffitiSession.value" @click="login()">
+                    <img src="./icons/Login.svg"></img>Log In
                 </button>
                 <template v-else>
                     <div class="logout">
-                        <router-link :to="`/profile/`">Profile</router-link>
-                        <button @click="{$graffiti.logout($graffitiSession.value); currentChannel = null; currentGroup = null;}">
-                            Log Out
+                        <router-link :to="`/profile/`" class="profile"><img src="./icons/User.svg">Profile</router-link>
+                        <button id="logoutButton" @click="logout()">
+                            <img src="./icons/Logout.svg"></img>Log Out
                         </button>
                     </div>
                 </template>
@@ -36,16 +36,14 @@
                 <form v-if="$graffitiSession.value" @submit.prevent="createGroup($graffitiSession.value)">
                     <fieldset :disabled="creating">
                         <input
+                            id="newGroupText"
                             type="text"
                             v-model="groupName"
                             placeholder="New group name"
                             ref="messageInput"
                             v-focus
                         />
-                        <input
-                            type="submit"
-                            :value="'Create'"
-                        />
+                        <button id="createGroupButton" type="submit">Create</button>
                     </fieldset>
                 </form>
 
@@ -80,22 +78,23 @@
                 </graffiti-discover>
             </div>
 
-            <div :class="{ empty: !currentGroup }">
+            <div>
                 <router-view></router-view>
-                <div v-if="$router.currentRoute.value.path=='/'">
+                <div id="right" v-if="$router.currentRoute.value.path=='/'">
                     <div class="groupName" v-if="currentGroup && $graffitiSession.value">{{currentGroup}}</div>
                     
                     <div class="addForm" v-if="adding">
                         <input type="text" v-model="addee"/>
                         <button @click="addParticipant($graffitiSession.value)">Add</button>
+                        <button @click="cancelAdd">Cancel</button>
                     </div>
                     
-                    <div v-if="currentGroup" class="plus">
-                        <button @click="openGroupTools">+</button>
+                    <div v-if="currentGroup" class="plusBig">
+                        <button @click="openGroupTools"><img src="./icons/More.svg"></img></button>
                     </div>
                     <div class="groupTools">
                         <button class="renameButton" @click="(event) => isRenaming(event, $graffitiSession.value)">Rename</button>
-                        <button v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor" class="addParticipantButton" @click="adding = !adding">Add Participant</button>
+                        <button v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor" class="addParticipantButton" @click="addParticipantButtonHandler()">Add Participant</button>
                         <button v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor" @click="deleteGroup($graffitiSession.value, currentGroupURL)">Delete</button>
                     </div>
                     <template id="renameTemplate">
@@ -105,9 +104,10 @@
                             v-focus
                         />
                         <button>Rename</button>
+                        <button @click="cancelRename">Cancel</button>
                     </template>
 
-                    <div id="messageBar">
+                    <div id="messageBar" :class="{ empty: !currentGroup }">
                         <graffiti-discover
                             v-if="currentGroup"
                             id="messageList"
@@ -138,7 +138,7 @@
                                     </div>
                                     {{ object.value.content }}
                                     <div class="plus" v-if="object.actor===$graffitiSession.value.actor">
-                                        <button @click="openTools">+</button>
+                                        <button @click="openTools"><img src="./icons/More.svg"></img></button>
                                     </div>
                                     <div class="tools">
                                         <button v-if="object.actor===$graffitiSession.value.actor" @click="deleteMessage($graffitiSession.value, object.url)">Delete</button>
@@ -152,12 +152,13 @@
                                             v-focus
                                         />
                                         <button>Save</button>
+                                        <button>Cancel</button>
                                     </template>
                                 </li>
                             </ul>
                         </graffiti-discover>
                     </div>
-                    <div v-if="$graffitiSession.value && currentGroup">
+                    <div id="typing" v-if="$graffitiSession.value && currentGroup">
                         <form @submit.prevent="sendMessage($graffitiSession.value)">
                             <fieldset id="textBar" :disabled="sending">
                                 <input
@@ -167,10 +168,9 @@
                                     ref="messageInput"
                                     v-focus
                                 />
-                                <input
-                                    type="submit"
-                                    :value="sending? 'Sending...' : 'Send'"
-                                />
+                                <button id="send" type="submit">
+                                    <img src="./icons/Send.svg"></img>
+                                </button>
                             </fieldset>
                         </form>
                     </div>

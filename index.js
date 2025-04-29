@@ -25,7 +25,7 @@ createApp({
       };
       const callbackExt = async (ev) => {
         await this.$nextTick();
-        const list = document.querySelector('#here');
+        const list = document.querySelector('#messageBar');
         const config = {
           attributes: true, 
           childList: true, 
@@ -71,6 +71,26 @@ createApp({
   },
 
   methods: {
+
+    logout() {
+      if (this.renameMode) {
+        const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
+        location.lastChild.remove();
+        location.lastChild.remove();
+        location.lastChild.remove();
+        this.renameMode = null;
+        this.session = null;
+        this.oldGroupName = null;
+        this.newGroupName = null;
+      }
+      document.querySelector(".groupTools").style.display = "none";
+      this.exitGroup();
+      this.$graffiti.logout(this.$graffitiSession.value);
+    },
+
+    login() {
+      this.$graffiti.login()
+    },
 
     async sendMessage(session) {
       if (!this.myMessage) return;
@@ -138,6 +158,7 @@ createApp({
     },
 
     async enterGroup(channel, groupName, admin, url, members) {
+      this.exitGroup();
       if(this.$router.currentRoute.value.path != '/') {
         this.$router.back()
       }
@@ -150,8 +171,19 @@ createApp({
       this.currentGroupAdmin = admin;
       this.currentGroupURL = url;
       this.members = members;
+    },
+
+    exitGroup() {
+      this.inGroup = false;
+      this.currentChannel = this.channels[0];
+      this.currentURL = null;
+      this.currentGroup = null;
+      this.currentGroupAdmin = null;
+      this.currentGroupURL = null;
+      this.members = null;
       if (this.renameMode) {
         const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
+        location.lastChild.remove();
         location.lastChild.remove();
         location.lastChild.remove();
         this.renameMode = null;
@@ -163,15 +195,10 @@ createApp({
       if (this.editMode) {
         this.editMode.parentElement.nextElementSibling.remove();
         this.editMode.parentElement.nextElementSibling.remove();
+        this.editMode.parentElement.nextElementSibling.remove();
         this.editMode = null;
       }
     },
-
-    // exitGroup() {
-    //   this.cu = null;
-    //   this.inGroup = false;
-    //   this.currentChannel = this.channels[0];
-    // },
 
     async deleteMessage(session, objectURL) {
       if (!objectURL) return;
@@ -190,6 +217,7 @@ createApp({
     },
 
     async deleteGroup(session, groupURL) {
+      document.querySelector(".groupTools").style.display = "none";
       if (!groupURL) return;
 
       this.sending = true;
@@ -200,9 +228,15 @@ createApp({
       );
 
       this.sending = false;
+      this.exitGroup();
       // Refocus the input field after sending the message
       await this.$nextTick();
       this.$refs.messageInput.focus();
+    },
+
+    addParticipantButtonHandler() {
+      document.querySelector(".groupTools").style.display = "none";
+      this.adding = !this.adding;
     },
 
     async addParticipant(session) {
@@ -234,8 +268,15 @@ createApp({
       this.$refs.messageInput.focus();
     },
 
+    cancelAdd() {
+      this.addee = "";
+      this.adding = false;
+      this.sending = false;
+    },
+
     isEditing(event, session, objectURL, oldMessage) {
       if (this.editMode) {
+        this.editMode.parentElement.nextElementSibling.remove();
         this.editMode.parentElement.nextElementSibling.remove();
         this.editMode.parentElement.nextElementSibling.remove();
         this.editMode = null;
@@ -247,6 +288,7 @@ createApp({
       this.editMode = event.target;
       const taskTemplate = document.querySelector("#editTemplate");
       this.editMode.parentElement.insertAdjacentHTML('afterend', taskTemplate.lastChild.outerHTML);
+      this.editMode.parentElement.insertAdjacentHTML('afterend', taskTemplate.firstChild.nextElementSibling.outerHTML);
       this.editMode.parentElement.insertAdjacentHTML('afterend', taskTemplate.firstChild.outerHTML);
 
       const inputBox = this.editMode.parentElement.nextElementSibling;
@@ -254,6 +296,8 @@ createApp({
       const saveButton = this.editMode.parentElement.nextElementSibling.nextElementSibling;
       inputBox.addEventListener('input', (e) => {this.newMessage = e.target.value;});
       saveButton.addEventListener('click', () => this.editMessage());
+      const cancelButton = this.editMode.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
+      cancelButton.addEventListener('click', () => this.cancelEdit());
     },
 
     async editMessage() {
@@ -280,6 +324,7 @@ createApp({
       this.sending = false;
       this.editMode.parentElement.nextElementSibling.remove();
       this.editMode.parentElement.nextElementSibling.remove();
+      this.editMode.parentElement.nextElementSibling.remove();
       
       this.editMode = null;
       this.session = null;
@@ -290,25 +335,46 @@ createApp({
       this.$refs.messageInput.focus();
     },
 
+    cancelEdit() {
+      this.editMode.parentElement.nextElementSibling.remove();
+      this.editMode.parentElement.nextElementSibling.remove();
+      this.editMode.parentElement.nextElementSibling.remove();
+      this.editMode = null;
+      this.session = null;
+      this.objectURL = null;
+      this.oldMessage = null;
+      return;
+    },
+
     openTools(ev) {
-      if (!ev.target.parentElement.nextElementSibling.style.display || ev.target.parentElement.nextElementSibling.style.display == 'none') {
-        ev.target.parentElement.nextElementSibling.style.display = "block";
+      let tgt = ev.target;
+      if (ev.target.tagName == "IMG") {
+        tgt = ev.target.parentElement;
+      }
+      if (!tgt.parentElement.nextElementSibling.style.display || tgt.parentElement.nextElementSibling.style.display == 'none') {
+        tgt.parentElement.nextElementSibling.style.display = "block";
         return;
       }
-      ev.target.parentElement.nextElementSibling.style.display = "none";
+      tgt.parentElement.nextElementSibling.style.display = "none";
     },
 
     openGroupTools(ev) {
-      if (!ev.target.parentElement.nextElementSibling.style.display || ev.target.parentElement.nextElementSibling.style.display == 'none') {
-        ev.target.parentElement.nextElementSibling.style.display = "block";
+      let tgt = ev.target;
+      if (ev.target.tagName == "IMG") {
+        tgt = ev.target.parentElement;
+      }
+      if (!tgt.parentElement.nextElementSibling.style.display || tgt.parentElement.nextElementSibling.style.display == 'none') {
+        tgt.parentElement.nextElementSibling.style.display = "block";
         return;
       }
-      ev.target.parentElement.nextElementSibling.style.display = "none";
+      tgt.parentElement.nextElementSibling.style.display = "none";
     },
 
     isRenaming(event, session) {
+      document.querySelector(".groupTools").style.display = "none";
       const location = event.target.parentElement.previousElementSibling.previousElementSibling;
       if (this.renameMode) {
+        location.lastChild.remove();
         location.lastChild.remove();
         location.lastChild.remove();
         this.renameMode = null;
@@ -322,13 +388,16 @@ createApp({
       this.renameMode = event.target;
       const taskTemplate = document.querySelector("#renameTemplate");
       location.insertAdjacentHTML('beforeend', taskTemplate.firstChild.outerHTML);
+      location.insertAdjacentHTML('beforeend', taskTemplate.firstChild.nextSibling.outerHTML);
       location.insertAdjacentHTML('beforeend', taskTemplate.lastChild.outerHTML);
 
-      const inputBox = location.lastChild.previousElementSibling;
+      const inputBox = location.lastChild.previousElementSibling.previousElementSibling;
       inputBox.value = this.oldGroupName;
-      const saveButton = location.lastChild;
+      const saveButton = location.lastChild.previousElementSibling;
       inputBox.addEventListener('input', (e) => {this.newGroupName = e.target.value;});
       saveButton.addEventListener('click', () => this.renameGroup());
+      const cancelButton = location.lastChild;
+      cancelButton.addEventListener('click', () => this.cancelRename());
     },
 
     async renameGroup() {
@@ -359,6 +428,7 @@ createApp({
       const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
       location.lastChild.remove();
       location.lastChild.remove();
+      location.lastChild.remove();
       
       this.renameMode = null;
       this.session = null;
@@ -367,6 +437,18 @@ createApp({
       // Refocus the input field after sending the message
       await this.$nextTick();
       this.$refs.messageInput.focus();
+    },
+
+    cancelRename() {
+      const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
+      location.lastChild.remove();
+      location.lastChild.remove();
+      location.lastChild.remove();
+      this.renameMode = null;
+      this.session = null;
+      this.oldGroupName = null;
+      this.newGroupName = null;
+      return;
     },
 
     async getGroupName(channel) {
