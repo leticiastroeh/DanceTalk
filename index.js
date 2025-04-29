@@ -83,7 +83,9 @@ createApp({
         this.oldGroupName = null;
         this.newGroupName = null;
       }
-      document.querySelector(".groupTools").style.display = "none";
+      if (document.querySelector(".groupTools").style.display) {
+        document.querySelector(".groupTools").style.display = "none";
+      }
       this.exitGroup();
       this.$graffiti.logout(this.$graffitiSession.value);
     },
@@ -160,7 +162,8 @@ createApp({
     async enterGroup(channel, groupName, admin, url, members) {
       this.exitGroup();
       if(this.$router.currentRoute.value.path != '/') {
-        this.$router.back()
+        this.$router.back();
+        console.log('!');
       }
       if (!channel) return;
       this.inGroup = true;
@@ -191,7 +194,9 @@ createApp({
         this.oldGroupName = null;
         this.newGroupName = null;
       }
-      document.querySelector(".groupTools").style.display = "none";
+      if (document.querySelector(".groupTools")) {
+        document.querySelector(".groupTools").style.display = "none";
+      }
       if (this.editMode) {
         this.editMode.parentElement.nextElementSibling.remove();
         this.editMode.parentElement.nextElementSibling.remove();
