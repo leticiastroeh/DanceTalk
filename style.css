@@ -206,7 +206,8 @@ fieldset {
 }
 
 #textBar > input[type="text"] {
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    width: max(calc(50vw - 85px), calc(100vw - 515px));
     height: 35px;
     border-radius: 10px;
     border: none;
@@ -235,6 +236,7 @@ fieldset {
     left: min(432px, 50vw + 5px);
     margin-left: 4px;
     right: 0;
+    z-index: 1;
 }
 
 .logout {
