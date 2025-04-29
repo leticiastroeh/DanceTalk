@@ -11,7 +11,9 @@
                     "vue-router": "https://cdn.jsdelivr.net/npm/vue-router@4.5.0/dist/vue-router.esm-browser.prod.js",
                     "@graffiti-garden/implementation-local": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-local@0.6.4/dist/browser/index.js",
                     "@graffiti-garden/implementation-remote": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-remote@0.6.2/dist/browser/index.js",
-                    "@graffiti-garden/wrapper-vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-vue@0.7.2/dist/browser/plugin.mjs"
+                    "@graffiti-garden/wrapper-vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-vue@0.7.2/dist/browser/plugin.mjs",
+                    "@graffiti-garden/wrapper-files": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-files@0.0.1/dist/browser/index.js",
+                    "@graffiti-garden/wrapper-files/vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-files@0.0.1/dist/vue/index.mjs"
                 }
             }
         </script>
@@ -22,13 +24,14 @@
             <div id="chatBar">
                 <h1>Dance Talk</h1>
                 <button class="login" v-if="!$graffitiSession.value" @click="login()">
-                    <img src="./icons/Login.svg"></img>Log In
+                    <img src="./icons/Login.svg">Log In
                 </button>
                 <template v-else>
                     <div class="logout">
-                        <router-link :to="`/profile/`" class="profile"><img src="./icons/User.svg">Profile</router-link>
+                        <button class="profile" @click="showProfile()"><img src="./icons/User.svg">Profile</button>
+                        <!-- <router-link :to="`/profile/`" class="profile"><img src="./icons/User.svg">Profile</router-link> -->
                         <button id="logoutButton" @click="logout()">
-                            <img src="./icons/Logout.svg"></img>Log Out
+                            <img src="./icons/Logout.svg">Log Out
                         </button>
                     </div>
                 </template>
@@ -79,9 +82,62 @@
             </div>
 
             <div>
-                <router-view></router-view>
-                <div id="right" v-if="$router.currentRoute.value.path=='/'">
-                    <div class="groupName" v-if="currentGroup && $graffitiSession.value">{{currentGroup}}</div>
+                <!-- <router-view></router-view> -->
+                <!-- <div id="right" v-if="$router.currentRoute.value.path=='/'"> -->
+                <div id="profilePage" v-if="showingProfile">
+                    <button id="back" @click="showProfile()"><img src="../../icons/Back.svg"></button>
+                    <span id="username"><strong>{{$graffitiSession.value.actor}}</strong></span>
+                    <img src="../../icons/User.svg">
+                    <div v-if="editingProfile">
+                        <ul>
+                            <li>
+                                <strong>First name: </strong> <input type="text" v-model="userFirst"/>
+                            </li>
+                            <li>
+                                <strong>Last name: </strong> <input type="text" v-model="userLast"/>
+                            </li>
+                            <li>
+                                <strong>Dance groups: </strong> <input type="text" v-model="userTeams"/>
+                            </li>
+                            <li>
+                                <strong>Dance styles: </strong> <input type="text" v-model="userStyles"/>
+                            </li>
+                        </ul>
+                        <button @click="setEditingProfile()">Cancel</button>
+                        <button @click="submitProfile()">Save</button>
+                    </div>
+                    <div v-else id="profileList">
+                        <ul>
+                            <li>
+                                <strong>First name: </strong>
+                            </li>
+                            <li>
+                                {{userFirst}}
+                            </li>
+                            <li>
+                                <strong>Last name: </strong>
+                            </li>
+                            <li>
+                                {{userLast}}
+                            </li>
+                            <li>
+                                <strong>Dance groups: </strong>
+                            </li>
+                            <li>
+                                {{userTeams}}
+                            </li>
+                            <li>
+                                <strong>Dance styles: </strong>
+                            </li>
+                            <li>
+                                {{userStyles}}
+                            </li>
+                        </ul>
+                        <button @click="setEditingProfile()">Edit</button>
+                    </div>
+                </div>
+                <div id="right" v-if="!showingProfile"></div>
+                    <div class="groupName" v-if="!showingProfile && currentGroup && $graffitiSession.value">{{currentGroup}}</div>
                     
                     <div class="addForm" v-if="adding">
                         <input type="text" v-model="addee"/>
@@ -89,10 +145,10 @@
                         <button @click="cancelAdd">Cancel</button>
                     </div>
                     
-                    <div v-if="currentGroup" class="plusBig">
-                        <button @click="openGroupTools"><img src="./icons/More.svg"></img></button>
+                    <div v-if="currentGroup" v-if="!showingProfile" class="plusBig">
+                        <button @click="openGroupTools" v-if="!showingProfile"><img src="./icons/More.svg"></button>
                     </div>
-                    <div class="groupTools">
+                    <div class="groupTools" v-if="!showingProfile">
                         <button class="renameButton" @click="(event) => isRenaming(event, $graffitiSession.value)">Rename</button>
                         <button v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor" class="addParticipantButton" @click="addParticipantButtonHandler()">Add Participant</button>
                         <button v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor" @click="deleteGroup($graffitiSession.value, currentGroupURL)">Delete</button>
@@ -138,7 +194,7 @@
                                     </div>
                                     {{ object.value.content }}
                                     <div class="plus" v-if="object.actor===$graffitiSession.value.actor">
-                                        <button @click="openTools"><img src="./icons/More.svg"></img></button>
+                                        <button @click="openTools"><img src="./icons/More.svg"></button>
                                     </div>
                                     <div class="tools">
                                         <button v-if="object.actor===$graffitiSession.value.actor" @click="deleteMessage($graffitiSession.value, object.url)">Delete</button>
@@ -158,7 +214,7 @@
                             </ul>
                         </graffiti-discover>
                     </div>
-                    <div id="typing" v-if="$graffitiSession.value && currentGroup">
+                    <div id="typing" v-if="!showingProfile && $graffitiSession.value && currentGroup">
                         <form @submit.prevent="sendMessage($graffitiSession.value)">
                             <fieldset id="textBar" :disabled="sending">
                                 <input
@@ -169,7 +225,7 @@
                                     v-focus
                                 />
                                 <button id="send" type="submit">
-                                    <img src="./icons/Send.svg"></img>
+                                    <img src="./icons/Send.svg">
                                 </button>
                             </fieldset>
                         </form>

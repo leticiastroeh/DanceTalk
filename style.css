@@ -247,26 +247,26 @@ fieldset {
 
 .logout {
     position: absolute;
-    left: min(270px, calc(50vw - 160px));
+    left: min(260px, calc(50vw - 170px));
     top: 30px;
 }
 
 @media (max-width: 680px) {
 
     #logoutButton {
-        display: block;
-        margin-top: 10px;
+        position: absolute;
+        top: -100px;
+        right: calc(50vw - 165px);
     }
 
     .profile {
-        margin-left: 15px;
-        margin-bottom: 10px;
+        position: absolute;
+        top: -65px;
+        right: calc(50vw - 165px);
     }
 
     .logout {
-        position: absolute;
-        left: min(270px, calc(50vw - 86px));
-        top: 30px;
+        position: relative;
     }
 
   }
@@ -328,7 +328,7 @@ h1 {
     border: none;
     cursor: pointer;
     position: absolute;
-    left: 270px;
+    left: 200px;
     top: 30px
 }
 
@@ -368,4 +368,54 @@ h1 {
     border: solid black 1px;
     width: calc(100% - 85px);
     padding-left: 5px;
+}
+
+#profilePage {
+    background-color: #F9F9F9;
+    height: calc(100vh - 15px);
+    padding: 20px;
+}
+
+#profilePage > #back {
+    width: min-content;
+    border: none;
+    cursor: pointer;
+    background-color: #F9F9F9;
+    margin-top: 5px;
+}
+
+#profilePage > #back > img {
+    height: 20px;
+    cursor: pointer;
+}
+
+#profilePage > img {
+    display: block;
+    width: 180px;
+    margin-top: 40px;
+    margin-left: 40px;
+}
+
+#profilePage > div > ul {
+    list-style-type: none;
+    font-size: 18px;
+}
+
+#username {
+    font-size: 24px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+li > input[type="text"] {
+    display: block;
+    height: 26px;
+    border-radius: 10px;
+    border: solid black 1px;
+    padding-left: 10px;
+    width: 160px;
+}
+
+#profileList {
+    line-height: 28px;
 }

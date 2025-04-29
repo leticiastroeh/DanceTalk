@@ -63,6 +63,14 @@ createApp({
       adding: false,
       addee: "",
       members: null,
+      userURL: null,
+      showingProfile: false,
+      userFirst: "",
+      userLast: "",
+      userStyles: "",
+      userTeams: "",
+      profileObjectUrl: null,
+      editingProfile: false,
     };
   },
 
@@ -83,15 +91,148 @@ createApp({
         this.oldGroupName = null;
         this.newGroupName = null;
       }
-      if (document.querySelector(".groupTools").style.display) {
+      if (document.querySelector(".groupTools")) {
         document.querySelector(".groupTools").style.display = "none";
       }
       this.exitGroup();
       this.$graffiti.logout(this.$graffitiSession.value);
+      this.userFirst = "";
+      this.userLast = "";
+      this.userTeams = "";
+      this.userStyles = "";
+      this.profileObjectUrl = null;
+      this.userURL = null;
+      this.showingProfile = false;
     },
 
-    login() {
-      this.$graffiti.login()
+    async login() {
+      this.$graffiti.login();
+      this.userURL = "https://" + this.$graffitiSession.value.actor + ".profile.com";
+      const profileObjectsIterator = this.$graffiti.discover([this.userURL], {
+        properties: { 
+          value: {
+            required: ['username'],
+            properties: {
+              username: { type: "string" },
+            }
+          },
+        }
+      });
+
+      let exists = false;
+
+      for await (const { object } of profileObjectsIterator) {
+        if (object.value.username == this.$graffitiSession.value.actor) {
+          exists = true;
+          this.userFirst = object.value.first;
+          this.userLast = object.value.last;
+          this.userTeams = object.value.teams;
+          this.userStyles = object.value.styles;
+          this.profileObjectUrl = object.url;
+        }
+      }
+
+      if (!exists) {
+        await this.$graffiti.put(
+          {
+            value: {
+              username: this.$graffitiSession.value.actor,
+              first: "",
+              last: "",
+              teams: "",
+              styles: "",
+            },
+            channels: [this.userURL],
+          },
+          this.$graffitiSession.value,
+        );
+      }
+    },
+
+    async showProfile() {
+      this.showingProfile = !this.showingProfile;
+      this.userURL = "https://" + this.$graffitiSession.value.actor + ".profile.com";
+      const profileObjectsIterator = this.$graffiti.discover([this.userURL], {
+        properties: { 
+          value: {
+            required: ['username'],
+            properties: {
+              username: { type: "string" },
+            }
+          },
+        }
+      });
+
+      let exists = false;
+
+      for await (const { object } of profileObjectsIterator) {
+        if (object.value.username == this.$graffitiSession.value.actor) {
+          exists = true;
+          this.userFirst = object.value.first;
+          this.userLast = object.value.last;
+          this.userTeams = object.value.teams;
+          this.userStyles = object.value.styles;
+          this.profileObjectUrl = object.url;
+        }
+      }
+    },
+
+    setEditingProfile() {
+      this.editingProfile = !this.editingProfile;
+    },
+
+    async submitProfile() {
+      this.sending = true;
+      this.userURL = "https://" + this.$graffitiSession.value.actor + ".profile.com";
+      const profileObjectsIterator = this.$graffiti.discover([this.userURL], {
+        properties: { 
+          value: {
+            required: ['username'],
+            properties: {
+              username: { type: "string" },
+            }
+          },
+        }
+      });
+
+      this.profileObjectUrl = null;
+      for await (const { object } of profileObjectsIterator) {
+        if (object.value.username == this.$graffitiSession.value.actor) {
+          this.profileObjectUrl = object.url;
+        }
+      }
+
+      await this.$graffiti.patch(
+        {
+          value: [
+            {
+              op: "replace",
+              path: "/first",
+              value: this.userFirst,
+            },
+            {
+              op: "replace",
+              path: "/last",
+              value: this.userLast,
+            },
+            {
+              op: "replace",
+              path: "/teams",
+              value: this.userTeams,
+            },
+            {
+              op: "replace",
+              path: "/styles",
+              value: this.userStyles,
+            },
+          ]
+        },
+        this.profileObjectUrl,
+        this.$graffitiSession.value,
+      );
+
+      this.sending = false;
+      this.editingProfile = false;
     },
 
     async sendMessage(session) {
@@ -161,10 +302,7 @@ createApp({
 
     async enterGroup(channel, groupName, admin, url, members) {
       this.exitGroup();
-      if(this.$router.currentRoute.value.path != '/') {
-        this.$router.back();
-        console.log('!');
-      }
+      this.showingProfile = false;
       if (!channel) return;
       this.inGroup = true;
       this.currentChannel = channel;
