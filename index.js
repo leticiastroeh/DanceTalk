@@ -94,6 +94,9 @@ createApp({
       if (document.querySelector(".groupTools")) {
         document.querySelector(".groupTools").style.display = "none";
       }
+      if(this.$router.currentRoute.value.path != '/') {
+        this.$router.back()
+      }
       this.exitGroup();
       this.$graffiti.logout(this.$graffitiSession.value);
       this.userFirst = "";
