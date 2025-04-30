@@ -314,10 +314,6 @@ createApp({
 
       this.sending = false;
       this.groupName = "";
-
-      // Refocus the input field after sending the message
-      await this.$nextTick();
-      this.$refs.messageInput.focus();
     },
 
     async enterGroup(channel, groupName, admin, url, members) {
@@ -384,9 +380,6 @@ createApp({
 
       this.sending = false;
       this.exitGroup();
-      // Refocus the input field after sending the message
-      await this.$nextTick();
-      this.$refs.messageInput.focus();
     },
 
     addParticipantButtonHandler() {
@@ -560,9 +553,6 @@ createApp({
       this.session = null;
       this.newGroupName = null;
       this.renaming = false;
-      // Refocus the input field after sending the message
-      await this.$nextTick();
-      this.$refs.messageInput.focus();
     },
 
     cancelRename() {

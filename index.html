@@ -268,7 +268,7 @@
                         ></my-menu>
                         <form @submit.prevent="sendMessage($graffitiSession.value)">
                             <fieldset id="textBar" :disabled="sending">
-                                <button id="sendOthers" @click="openSendTools">
+                                <button type="button" id="sendOthers" @click="openSendTools">
                                     <img src="./icons/Plus.svg">
                                 </button>
                                 <input
