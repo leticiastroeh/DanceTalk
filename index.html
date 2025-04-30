@@ -192,8 +192,8 @@
                         <button class="above" @click="cancelRename()">Cancel</button>
                     </div>
                     
-                    <div v-if="currentGroup" v-if="!showingProfile && $router.currentRoute.value.path=='/'" class="plusBig">
-                        <button @click="openGroupTools" v-if="!showingProfile && $router.currentRoute.value.path=='/'"><img src="./icons/More.svg"></button>
+                    <div v-if="currentGroup" v-if="!showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor" class="plusBig">
+                        <button @click="openGroupTools" v-if="!showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor"><img src="./icons/More.svg"></button>
                     </div>
                     <my-menu 
                         v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor"
@@ -262,8 +262,15 @@
                         </graffiti-discover>
                     </div>
                     <div id="typing" v-if="!showingProfile && $router.currentRoute.value.path=='/' && $graffitiSession.value && currentGroup">
+                        <my-menu 
+                            class="sendTools"
+                            :buttons="[{name: 'File', click: console.log, params: ['send a file']}]"
+                        ></my-menu>
                         <form @submit.prevent="sendMessage($graffitiSession.value)">
                             <fieldset id="textBar" :disabled="sending">
+                                <button id="sendOthers" @click="openSendTools">
+                                    <img src="./icons/Plus.svg">
+                                </button>
                                 <input
                                     type="text"
                                     v-model="myMessage"

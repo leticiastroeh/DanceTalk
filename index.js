@@ -330,7 +330,7 @@ createApp({
       this.inGroup = true;
       this.currentChannel = channel;
       let result =  await this.getGroupName(channel); 
-      this.currentGroup = result.name;
+      this.currentGroup = groupName;
       this.currentURL = result.url;
       this.currentGroupAdmin = admin;
       this.currentGroupURL = url;
@@ -499,6 +499,15 @@ createApp({
       tgt.parentElement.nextElementSibling.style.display = "none";
     },
 
+    openSendTools() {
+      let tgt = document.querySelector(".sendTools");
+      if (!tgt.style.display || tgt.style.display == 'none') {
+        tgt.style.display = "block";
+        return;
+      }
+      tgt.style.display = "none";
+    },
+
     openGroupTools(ev) {
       let tgt = ev.target;
       if (ev.target.tagName == "IMG") {
@@ -534,17 +543,17 @@ createApp({
           value: [
             {
               op: "replace",
-              path: "/name",
+              path: "/object/name",
               value: this.newGroupName,
             }
           ]
         },
-        this.currentURL,
+        this.currentGroupURL,
         this.session,
       );
 
       let result = await this.getGroupName(this.currentChannel);
-      this.currentGroup = result.name;
+      this.currentGroup = this.newGroupName;
       this.currentURL = result.url;
 
       this.sending = false;
