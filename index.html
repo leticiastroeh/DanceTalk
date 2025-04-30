@@ -103,8 +103,8 @@
                                 <strong>Dance styles: </strong> <input type="text" v-model="userStyles"/>
                             </li>
                         </ul>
-                        <button @click="setEditingProfile()">Cancel</button>
-                        <button @click="submitProfile()">Save</button>
+                        <button class="profileButton" @click="setEditingProfile()">Cancel</button>
+                        <button class="profileButton" @click="submitProfile()">Save</button>
                     </div>
                     <div v-else id="profileList">
                         <ul>
@@ -133,7 +133,7 @@
                                 {{userStyles}}
                             </li>
                         </ul>
-                        <button @click="setEditingProfile()">Edit</button>
+                        <button class="profileButton" @click="setEditingProfile()">Edit</button>
                     </div>
                 </div>
                 <div id="right" v-if="!showingProfile"></div>

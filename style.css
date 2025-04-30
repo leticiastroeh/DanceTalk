@@ -419,3 +419,13 @@ li > input[type="text"] {
 #profileList {
     line-height: 28px;
 }
+
+.profileButton {
+    background-color: #1B7A6D;
+    color: white;
+    font-size: 14px;
+    padding: 7px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
