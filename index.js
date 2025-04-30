@@ -430,7 +430,7 @@ createApp({
     },
 
     isEditing(session, objectURL, oldMessage) {
-      document.querySelector(".tools").style.display = "none";
+      Array.from(document.querySelectorAll(".tools")).forEach((el) => el.style.display = "none");
       if (this.editing) {
         this.objectURL = null;
         this.session = null;
