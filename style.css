@@ -168,14 +168,15 @@ fieldset {
     z-index: 3;
 }
 
-.mine > .author {
-    display: none;
-}
-
 .author {
+    font-size: 16px;
+    border: none;
     color: #1B7A6D;
     font-weight: bold;
     margin-bottom: 5px;
+    margin-left: -6px;
+    margin-top: -2px;
+    cursor: pointer;
 }
 
 .group {
@@ -399,6 +400,7 @@ h1 {
 #profilePage > div > ul {
     list-style-type: none;
     font-size: 18px;
+    line-height: 28px;
 }
 
 #username {

@@ -10,7 +10,7 @@ import { Profile } from "./components/profile/profile.js"
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
-      { path: "/profile/", component: Profile },
+      { path: "/profile/:username", component: Profile },
     ],
   });
 
@@ -150,6 +150,9 @@ createApp({
     },
 
     async showProfile() {
+      if(this.$router.currentRoute.value.path != '/') {
+        this.$router.back()
+      }
       this.showingProfile = !this.showingProfile;
       this.userURL = "https://" + this.$graffitiSession.value.actor + ".profile.com";
       const profileObjectsIterator = this.$graffiti.discover([this.userURL], {
@@ -301,6 +304,9 @@ createApp({
     },
 
     async enterGroup(channel, groupName, admin, url, members) {
+      if(this.$router.currentRoute.value.path != '/') {
+        this.$router.back()
+      }
       this.exitGroup();
       this.showingProfile = false;
       if (!channel) return;
@@ -617,6 +623,10 @@ createApp({
         }
       }
       return {name: groupName, url: groupURL};
+    },
+
+    async viewProfile(user) {
+      this.$router.push({ path: '/profile/' + user});
     },
   },
 })

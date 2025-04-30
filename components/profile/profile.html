@@ -1,19 +1,48 @@
 <div id="profilePage">
-    <button id="back" @click="this.$router.back()"><img src="../../icons/Back.svg"></button>
-    <span id="username">User Name</span>
+    <button id="back" @click="$router.back()"><img src="../../icons/Back.svg"></button>
+    <span id="username">{{ $route.params.username }}</span>
     <img src="../../icons/User.svg">
-    <ul>
-        <li>
-            <strong>First name: </strong> <input type="text"/>
-        </li>
-        <li>
-            <strong>Last name: </strong> Bla
-        </li>
-        <li>
-            <strong>Dance groups: </strong> Bla
-        </li>
-        <li>
-            <strong>Dance styles: </strong> Bla
-        </li>
-    </ul>
+    <div>
+        <graffiti-discover
+            v-slot="{ objects: messageObjects, isInitialPolling }"
+            :channels="['https://' + $route.params.username + '.profile.com']"
+            :schema="{
+                properties: {
+                    value: {
+                        required: ['username'],
+                        properties: {
+                                username: { type: 'string' }
+                        }
+                    }
+                }
+            }"
+        >
+            <ul v-for="object of messageObjects">
+                <li>
+                    <strong>First name: </strong>
+                </li>
+                <li>
+                    {{object.value.first}}
+                </li>
+                <li>
+                    <strong>Last name: </strong>
+                </li>
+                <li>
+                    {{object.value.last}}
+                </li>
+                <li>
+                    <strong>Dance groups: </strong>
+                </li>
+                <li>
+                    {{object.value.teams}}
+                </li>
+                <li>
+                    <strong>Dance styles: </strong>
+                </li>
+                <li>
+                    {{object.value.styles}}
+                </li>
+            </ul>
+        </graffiti-discover>
+    </div>
 </div>
