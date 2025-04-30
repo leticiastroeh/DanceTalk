@@ -185,7 +185,7 @@
                         <input
                             type="text"
                             class="above"
-                            :value="newGroupName"
+                            v-model="newGroupName"
                             v-focus
                         />
                         <button class="above" @click="renameGroup()">Rename</button>
@@ -230,24 +230,33 @@
                                     <div v-if="object.actor!=$graffitiSession.value.actor">
                                         <button class="author" @click="viewProfile(object.actor)">{{ object.actor }}</button>
                                     </div>
-                                    {{ object.value.content }}
-                                    <div class="plus" v-if="object.actor===$graffitiSession.value.actor">
-                                        <button @click="openTools"><img src="./icons/More.svg"></button>
-                                    </div>
-                                    <div class="tools">
-                                        <button v-if="object.actor===$graffitiSession.value.actor" @click="deleteMessage($graffitiSession.value, object.url)">Delete</button>
-                                        <button class="editButton" v-if="object.actor===$graffitiSession.value.actor" @click="(event) => isEditing(event, $graffitiSession.value, object.url, object.value.content)">Edit</button>
-                                    </div>
-                                    <template id="editTemplate">
+                                    <span v-if="!editing || object.actor!==$graffitiSession.value.actor || objectURL!=object.url">{{ object.value.content }}</span>
+                                    <div v-if="editing && object.actor===$graffitiSession.value.actor && objectURL==object.url" id="editTemplate">
                                         <input
                                             type="text"
-                                            :value="object.value.content"
+                                            v-model="newMessage"
                                             ref="messageInput"
                                             v-focus
                                         />
-                                        <button>Save</button>
-                                        <button>Cancel</button>
-                                    </template>
+                                        <button @click="editMessage()">Save</button>
+                                        <button @click="cancelEdit()">Cancel</button>
+                                    </div>
+                                    <div class="plus" v-if="object.actor===$graffitiSession.value.actor">
+                                        <button @click="openTools"><img src="./icons/More.svg"></button>
+                                    </div>
+                                    <!-- <my-menu 
+                                        v-if="object.actor===$graffitiSession.value.actor"
+                                        class="tools"
+                                        :buttons="[{name: 'Edit', click: isEditing(), params: [$graffitiSession.value, object.url, object.value.content]}, {name: 'Delete', click: deleteMessage, params: [$graffitiSession.value, object.url]}]"
+                                    ></my-menu> -->
+                                    <div v-if="object.actor===$graffitiSession.value.actor" class="myMenu tools">
+                                        <button @click="isEditing($graffitiSession.value, object.url, object.value.content)">
+                                            Edit
+                                        </button>
+                                        <button @click="deleteMessage($graffitiSession.value, object.url)">
+                                            Delete
+                                        </button>
+                                    </div>
                                 </li>
                             </ul>
                         </graffiti-discover>

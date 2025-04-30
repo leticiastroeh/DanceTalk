@@ -89,6 +89,7 @@ createApp({
       fileUrl: "",
       graffitiFileSchema,
       renaming: false,
+      editing: false,
     };
   },
 
@@ -344,23 +345,20 @@ createApp({
       this.currentGroupAdmin = null;
       this.currentGroupURL = null;
       this.members = null;
-      if (this.renameMode) {
-        this.session = null;
-        this.oldGroupName = null;
-        this.newGroupName = null;
-      }
+      this.session = null;
+      this.oldGroupName = null;
+      this.newGroupName = null;
+      this.renaming = false;
+      this.editing = false;
+      this.oldMessage = null;
+      this.newMessage = null;
       if (document.querySelector(".groupTools")) {
         document.querySelector(".groupTools").style.display = "none";
-      }
-      if (this.editMode) {
-        this.editMode.parentElement.nextElementSibling.remove();
-        this.editMode.parentElement.nextElementSibling.remove();
-        this.editMode.parentElement.nextElementSibling.remove();
-        this.editMode = null;
       }
     },
 
     async deleteMessage(session, objectURL) {
+      document.querySelector(".tools").style.display = "none";
       if (!objectURL) return;
 
       this.sending = true;
@@ -371,9 +369,6 @@ createApp({
       );
 
       this.sending = false;
-      // Refocus the input field after sending the message
-      await this.$nextTick();
-      this.$refs.messageInput.focus();
     },
 
     async deleteGroup(session, groupURL) {
@@ -434,30 +429,21 @@ createApp({
       this.sending = false;
     },
 
-    isEditing(event, session, objectURL, oldMessage) {
-      if (this.editMode) {
-        this.editMode.parentElement.nextElementSibling.remove();
-        this.editMode.parentElement.nextElementSibling.remove();
-        this.editMode.parentElement.nextElementSibling.remove();
-        this.editMode = null;
+    isEditing(session, objectURL, oldMessage) {
+      document.querySelector(".tools").style.display = "none";
+      if (this.editing) {
+        this.objectURL = null;
+        this.session = null;
+        this.oldMessage = null;
+        this.newMessage = null;
+        this.editing = false;
         return;
       }
+      this.editing = true;
+      this.oldMessage = oldMessage;
+      this.newMessage = oldMessage;
       this.session = session;
       this.objectURL = objectURL;
-      this.oldMessage = oldMessage;
-      this.editMode = event.target;
-      const taskTemplate = document.querySelector("#editTemplate");
-      this.editMode.parentElement.insertAdjacentHTML('afterend', taskTemplate.lastChild.outerHTML);
-      this.editMode.parentElement.insertAdjacentHTML('afterend', taskTemplate.firstChild.nextElementSibling.outerHTML);
-      this.editMode.parentElement.insertAdjacentHTML('afterend', taskTemplate.firstChild.outerHTML);
-
-      const inputBox = this.editMode.parentElement.nextElementSibling;
-      inputBox.value = oldMessage;
-      const saveButton = this.editMode.parentElement.nextElementSibling.nextElementSibling;
-      inputBox.addEventListener('input', (e) => {this.newMessage = e.target.value;});
-      saveButton.addEventListener('click', () => this.editMessage());
-      const cancelButton = this.editMode.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
-      cancelButton.addEventListener('click', () => this.cancelEdit());
     },
 
     async editMessage() {
@@ -482,27 +468,22 @@ createApp({
       );
 
       this.sending = false;
-      this.editMode.parentElement.nextElementSibling.remove();
-      this.editMode.parentElement.nextElementSibling.remove();
-      this.editMode.parentElement.nextElementSibling.remove();
-      
-      this.editMode = null;
       this.session = null;
       this.objectURL = null;
       this.oldMessage = null;
+      this.newMessage = null;
+      this.editing = false;
       // Refocus the input field after sending the message
       await this.$nextTick();
       this.$refs.messageInput.focus();
     },
 
     cancelEdit() {
-      this.editMode.parentElement.nextElementSibling.remove();
-      this.editMode.parentElement.nextElementSibling.remove();
-      this.editMode.parentElement.nextElementSibling.remove();
-      this.editMode = null;
       this.session = null;
       this.objectURL = null;
       this.oldMessage = null;
+      this.newMessage = null;
+      this.editing = false;
       return;
     },
 
@@ -548,7 +529,7 @@ createApp({
 
       this.sending = true;
 
-      await this.$graffiti.patch(
+      let a = await this.$graffiti.patch(
         {
           value: [
             {
