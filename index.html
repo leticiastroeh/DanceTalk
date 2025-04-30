@@ -87,7 +87,43 @@
                 <div id="profilePage" v-if="showingProfile && $router.currentRoute.value.path=='/'">
                     <button id="back" @click="showProfile()"><img src="./icons/Back.svg"></button>
                     <span id="username"><strong>{{$graffitiSession.value.actor}}</strong></span>
-                    <img src="./icons/User.svg">
+                    
+                    <graffiti-discover
+                        :schema="graffitiFileSchema"
+                        v-slot="{ objects: messageObjects }"
+                        :channels="['https://' + $graffitiSession.value.actor + '.profilepicture.com']"
+                    >
+                        <div v-for="object of messageObjects">
+                            <graffiti-object-to-file
+                                :object="object"
+                                v-slot="{ file, fileDataUrl }"
+                            >
+                                <p v-if="file === undefined">Loading the object {{object}}</p>
+                                <p v-else-if="file === null">File not found.</p>
+                                <template v-else>
+                                    <p v-if="file.type.startsWith('image/')">
+                                        <img
+                                            id="profilePicture"
+                                            :src="fileDataUrl"
+                                            alt="Uploaded Image"
+                                        />
+                                    </p>
+                                </template>
+                            </graffiti-object-to-file>
+                        </div>
+                    </graffiti-discover>
+
+                    <form @submit.prevent="uploadFile($graffitiSession.value)">
+                        <input
+                            id="file-input"
+                            type="file"
+                            class="buttonInside"
+                            accept="*"
+                            @change="setFileToUpload"
+                        />
+                        <input type="submit" class="profileButton" value="Upload" />
+                    </form>
+
                     <div v-if="editingProfile">
                         <ul>
                             <li>
@@ -163,7 +199,7 @@
                         <button @click="cancelRename">Cancel</button>
                     </template>
 
-                    <div id="messageBar" :class="{ empty: !currentGroup }">
+                    <div id="messageBar" :class="{ empty: !currentGroup }" v-if="!showingProfile && $router.currentRoute.value.path=='/'">
                         <graffiti-discover
                             v-if="currentGroup"
                             id="messageList"

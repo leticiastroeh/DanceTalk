@@ -1,7 +1,40 @@
 <div id="profilePage">
     <button id="back" @click="$router.back()"><img src="./../../icons/Back.svg"></button>
     <span id="username">{{ $route.params.username }}</span>
-    <img src="./../../icons/User.svg">
+    <graffiti-discover
+        :schema="{
+            properties: {
+                value: {
+                    required: ['name'],
+                    properties: {
+                        name: { type: 'string' }
+                    }
+                }
+            }
+        }"
+        v-slot="{ objects: messageObjects }"
+        :channels="['https://' + $route.params.username + '.profilepicture.com']"
+    >
+        <div v-for="object of messageObjects">
+            {{object}}
+            <!-- <graffiti-object-to-file
+                :object="object"
+                v-slot="{ file, fileDataUrl }"
+            >
+                <p v-if="file === undefined">Loading the object {{object}}</p>
+                <p v-else-if="file === null">File not found.</p>
+                <template v-else>
+                    <p v-if="file.type.startsWith('image/')">
+                        <img
+                            id="profilePicture"
+                            :src="fileDataUrl"
+                            alt="Uploaded Image"
+                        />
+                    </p>
+                </template>
+            </graffiti-object-to-file> -->
+        </div>
+    </graffiti-discover>
     <div>
         <graffiti-discover
             v-slot="{ objects: messageObjects, isInitialPolling }"

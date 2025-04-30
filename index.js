@@ -5,6 +5,8 @@ import { GraffitiPlugin } from "@graffiti-garden/wrapper-vue";
 import { onMounted } from "vue";
 import { defineAsyncComponent } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
+import { fileToGraffitiObject, graffitiFileSchema } from "@graffiti-garden/wrapper-files";
+import { GraffitiObjectToFile } from "@graffiti-garden/wrapper-files/vue";
 import { Profile } from "./components/profile/profile.js"
 
 const router = createRouter({
@@ -71,6 +73,9 @@ createApp({
       userTeams: "",
       profileObjectUrl: null,
       editingProfile: false,
+      fileToUpload: undefined,
+      fileUrl: "",
+      graffitiFileSchema,
     };
   },
 
@@ -631,7 +636,75 @@ createApp({
     async viewProfile(user) {
       this.$router.push({ path: '/profile/' + user});
     },
+
+    setFileToUpload(event) {
+      const target = event.target;
+      if (!target.files?.length) return;
+      this.fileToUpload = target.files[0];
+    },
+
+    async uploadFile(session) {
+      if (!this.fileToUpload) return;
+
+      const pictureURL = "https://" + this.$graffitiSession.value.actor + ".profilepicture.com";
+      const profileObjectsIterator = this.$graffiti.discover([pictureURL], {
+        properties: {
+          value: {
+          },
+        }
+      });
+
+      let pictureObjectURL = null;
+
+      for await (const { object } of profileObjectsIterator) {
+        pictureObjectURL = object.url;
+      }
+
+      if (!pictureObjectURL) {
+        const object = await fileToGraffitiObject(
+          this.fileToUpload,
+        );
+        object.channels = ["https://" + this.$graffitiSession.value.actor + ".profilepicture.com"];
+        const { url } = await this.$graffiti.put(
+          object,
+          session,
+        );
+        this.fileUrl = url;
+      }
+      
+      else {
+        const object = await fileToGraffitiObject(
+          this.fileToUpload,
+        );
+        const { url } = await this.$graffiti.patch(
+          {
+            value: [
+              {
+                op: "replace",
+                path: "/name",
+                value: object.value.name,
+              },
+              {
+                op: "replace",
+                path: "/data",
+                value: object.value.data,
+              },
+              {
+                op: "replace",
+                path: "/mimetype",
+                value: object.value.mimetype,
+              },
+            ]
+          },
+          pictureObjectURL,
+          this.$graffitiSession.value,
+        );
+        this.fileUrl = url;
+      }
+    },
   },
+
+  components: { GraffitiObjectToFile },
 })
   .use(GraffitiPlugin, {
     graffiti: new GraffitiLocal(),

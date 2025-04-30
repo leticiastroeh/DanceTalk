@@ -373,8 +373,10 @@ h1 {
 
 #profilePage {
     background-color: #F9F9F9;
-    height: calc(100vh - 15px);
+    height: 95vh;
+    overflow: auto;
     padding: 20px;
+    margin-top: -7px;
 }
 
 #profilePage > #back {
@@ -390,9 +392,11 @@ h1 {
     cursor: pointer;
 }
 
-#profilePage > img {
+#profilePicture {
     display: block;
-    width: 180px;
+    width: min(260px, 40vw - 40px);
+    height: min(260px, 40vw - 40px);
+    overflow: hidden;
     margin-top: 40px;
     margin-left: 40px;
 }
@@ -423,6 +427,16 @@ li > input[type="text"] {
 }
 
 .profileButton {
+    background-color: #1B7A6D;
+    color: white;
+    font-size: 14px;
+    padding: 7px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+::file-selector-button {
     background-color: #1B7A6D;
     color: white;
     font-size: 14px;
