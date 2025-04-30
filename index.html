@@ -173,31 +173,33 @@
                     </div>
                 </div>
                 <div id="right" v-if="!showingProfile && $router.currentRoute.value.path=='/'"></div>
-                    <div class="groupName" v-if="!showingProfile && $router.currentRoute.value.path=='/' && currentGroup && $graffitiSession.value">{{currentGroup}}</div>
+                    <div class="groupName" v-if="!showingProfile && $router.currentRoute.value.path=='/' && currentGroup && $graffitiSession.value"><span v-if="!renaming">{{currentGroup}}</span></div>
                     
-                    <div class="addForm" v-if="adding">
-                        <input type="text" v-model="addee"/>
-                        <button @click="addParticipant($graffitiSession.value)">Add</button>
-                        <button @click="cancelAdd">Cancel</button>
+                    <div class="addForm above" v-if="adding">
+                        <input class="above" type="text" v-model="addee"/>
+                        <button class="above" @click="addParticipant($graffitiSession.value)">Add</button>
+                        <button class="above" @click="cancelAdd">Cancel</button>
+                    </div>
+
+                    <div class="above" id="renameTemplate" v-if="renaming">
+                        <input
+                            type="text"
+                            class="above"
+                            :value="newGroupName"
+                            v-focus
+                        />
+                        <button class="above" @click="renameGroup()">Rename</button>
+                        <button class="above" @click="cancelRename()">Cancel</button>
                     </div>
                     
                     <div v-if="currentGroup" v-if="!showingProfile && $router.currentRoute.value.path=='/'" class="plusBig">
                         <button @click="openGroupTools" v-if="!showingProfile && $router.currentRoute.value.path=='/'"><img src="./icons/More.svg"></button>
                     </div>
-                    <div class="groupTools" v-if="!showingProfile && $router.currentRoute.value.path=='/'">
-                        <button class="renameButton" @click="(event) => isRenaming(event, $graffitiSession.value)">Rename</button>
-                        <button v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor" class="addParticipantButton" @click="addParticipantButtonHandler()">Add Participant</button>
-                        <button v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor" @click="deleteGroup($graffitiSession.value, currentGroupURL)">Delete</button>
-                    </div>
-                    <template id="renameTemplate">
-                        <input
-                            type="text"
-                            :value="newGroupName"
-                            v-focus
-                        />
-                        <button>Rename</button>
-                        <button @click="cancelRename">Cancel</button>
-                    </template>
+                    <my-menu 
+                        v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor"
+                        class="groupTools"
+                        :buttons="[{name: 'Rename', click: renameButtonHandler, params: [$graffitiSession.value]}, {name: 'Add Participant', click: addParticipantButtonHandler, params: []}, {name: 'Delete', click: deleteGroup, params: [$graffitiSession.value, currentGroupURL]}]"
+                    ></my-menu>
 
                     <div id="messageBar" :class="{ empty: !currentGroup }" v-if="!showingProfile && $router.currentRoute.value.path=='/'">
                         <graffiti-discover

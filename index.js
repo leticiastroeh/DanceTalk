@@ -7,7 +7,19 @@ import { defineAsyncComponent } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { fileToGraffitiObject, graffitiFileSchema } from "@graffiti-garden/wrapper-files";
 import { GraffitiObjectToFile } from "@graffiti-garden/wrapper-files/vue";
-import { Profile } from "./components/profile/profile.js"
+import { Profile } from "./components/profile/profile.js";
+// import { Menu } from "./components/menu/menu.js";
+
+const Menu = {
+  props: ['buttons'],
+  template: `
+      <div class="myMenu">
+          <button v-for="button of buttons" @click="button.click(...button.params)">
+              {{button.name}}
+          </button>
+      </div>
+  `             
+}
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -76,6 +88,7 @@ createApp({
       fileToUpload: undefined,
       fileUrl: "",
       graffitiFileSchema,
+      renaming: false,
     };
   },
 
@@ -87,11 +100,6 @@ createApp({
 
     logout() {
       if (this.renameMode) {
-        const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
-        location.lastChild.remove();
-        location.lastChild.remove();
-        location.lastChild.remove();
-        this.renameMode = null;
         this.session = null;
         this.oldGroupName = null;
         this.newGroupName = null;
@@ -337,11 +345,6 @@ createApp({
       this.currentGroupURL = null;
       this.members = null;
       if (this.renameMode) {
-        const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
-        location.lastChild.remove();
-        location.lastChild.remove();
-        location.lastChild.remove();
-        this.renameMode = null;
         this.session = null;
         this.oldGroupName = null;
         this.newGroupName = null;
@@ -527,39 +530,21 @@ createApp({
       tgt.parentElement.nextElementSibling.style.display = "none";
     },
 
-    isRenaming(event, session) {
+    renameButtonHandler(session) {
       document.querySelector(".groupTools").style.display = "none";
-      const location = event.target.parentElement.previousElementSibling.previousElementSibling;
-      if (this.renameMode) {
-        location.lastChild.remove();
-        location.lastChild.remove();
-        location.lastChild.remove();
-        this.renameMode = null;
+      if (this.renaming) {
+        this.renaming = false;
         this.session = null;
-        this.oldGroupName = null;
         this.newGroupName = null;
         return;
       }
+      this.renaming = true;
       this.session = session;
-      this.oldGroupName = this.currentGroup;
-      this.renameMode = event.target;
-      const taskTemplate = document.querySelector("#renameTemplate");
-      location.insertAdjacentHTML('beforeend', taskTemplate.firstChild.outerHTML);
-      location.insertAdjacentHTML('beforeend', taskTemplate.firstChild.nextSibling.outerHTML);
-      location.insertAdjacentHTML('beforeend', taskTemplate.lastChild.outerHTML);
-
-      const inputBox = location.lastChild.previousElementSibling.previousElementSibling;
-      inputBox.value = this.oldGroupName;
-      const saveButton = location.lastChild.previousElementSibling;
-      inputBox.addEventListener('input', (e) => {this.newGroupName = e.target.value;});
-      saveButton.addEventListener('click', () => this.renameGroup());
-      const cancelButton = location.lastChild;
-      cancelButton.addEventListener('click', () => this.cancelRename());
+      this.newGroupName = this.currentGroup;
     },
 
     async renameGroup() {
       if (!this.newGroupName) return;
-      if (this.oldGroupName == this.newGroupName) return;
 
       this.sending = true;
 
@@ -582,26 +567,16 @@ createApp({
       this.currentURL = result.url;
 
       this.sending = false;
-      const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
-      location.lastChild.remove();
-      location.lastChild.remove();
-      location.lastChild.remove();
-      
-      this.renameMode = null;
       this.session = null;
-      this.oldGroupName = null;
       this.newGroupName = null;
+      this.renaming = false;
       // Refocus the input field after sending the message
       await this.$nextTick();
       this.$refs.messageInput.focus();
     },
 
     cancelRename() {
-      const location = this.renameMode.parentElement.previousElementSibling.previousElementSibling;
-      location.lastChild.remove();
-      location.lastChild.remove();
-      location.lastChild.remove();
-      this.renameMode = null;
+      this.renaming = false;
       this.session = null;
       this.oldGroupName = null;
       this.newGroupName = null;
@@ -711,4 +686,5 @@ createApp({
     // graffiti: new GraffitiRemote(),
   })
   .use(router)
+  .component('my-menu', Menu)
   .mount("#app");
