@@ -1,7 +1,7 @@
 <div id="profilePage">
-    <button id="back" @click="$router.back()"><img src="../../icons/Back.svg"></button>
+    <button id="back" @click="$router.back()"><img src="./../../icons/Back.svg"></button>
     <span id="username">{{ $route.params.username }}</span>
-    <img src="../../icons/User.svg">
+    <img src="./../../icons/User.svg">
     <div>
         <graffiti-discover
             v-slot="{ objects: messageObjects, isInitialPolling }"
