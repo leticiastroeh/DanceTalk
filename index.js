@@ -32,6 +32,7 @@ createApp({
   data() {
 
     onMounted(async () => {
+      this.$graffiti.sessionEvents.addEventListener('login', this.loginHandler);
       await this.$nextTick();
       const bar = document.querySelector('#messageBar');
       const configExt = {
@@ -57,9 +58,9 @@ createApp({
     return {
       myMessage: "",
       sending: false,
-      channels: ["designftw"],
+      channels: ["designftwL"],
       groupName: null,
-      currentChannel: "designftw",
+      currentChannel: "designftwL",
       currentGroup: null,
       inGroup: false,
       newMessage: "",
@@ -122,8 +123,7 @@ createApp({
       this.showingProfile = false;
     },
 
-    async login() {
-      this.$graffiti.login();
+    async loginHandler() {
       this.userURL = "https://" + this.$graffitiSession.value.actor + ".profile.com";
       const profileObjectsIterator = this.$graffiti.discover([this.userURL], {
         properties: { 
@@ -154,16 +154,23 @@ createApp({
           {
             value: {
               username: this.$graffitiSession.value.actor,
+              name: "",
+              generator: "https://leticiastroeh.github.io/DanceTalk/",
               first: "",
               last: "",
               teams: "",
               styles: "",
+              describes: this.$graffitiSession.value.actor,
             },
-            channels: [this.userURL],
+            channels: [this.userURL, "designftw-2025-studio1"],
           },
           this.$graffitiSession.value,
         );
       }
+    },
+
+    async login() {
+      await this.$graffiti.login();
     },
 
     async showProfile() {
@@ -237,6 +244,11 @@ createApp({
             },
             {
               op: "replace",
+              path: "/name",
+              value: this.userFirst + " " + this.userLast,
+            },
+            {
+              op: "replace",
               path: "/teams",
               value: this.userTeams,
             },
@@ -244,6 +256,11 @@ createApp({
               op: "replace",
               path: "/styles",
               value: this.userStyles,
+            },
+            {
+              op: "replace",
+              path: "/describes",
+              value: this.$graffitiSession.value.actor,
             },
           ]
         },
@@ -660,8 +677,8 @@ createApp({
   },
 })
   .use(GraffitiPlugin, {
-    graffiti: new GraffitiLocal(),
-    // graffiti: new GraffitiRemote(),
+    // graffiti: new GraffitiLocal(),
+    graffiti: new GraffitiRemote(),
   })
   .use(router)
   .component('my-menu', Menu)
