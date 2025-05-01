@@ -162,7 +162,7 @@ createApp({
               styles: "",
               describes: this.$graffitiSession.value.actor,
             },
-            channels: [this.userURL, "designftw-2025-studio1"],
+            channels: [this.userURL],
           },
           this.$graffitiSession.value,
         );
@@ -409,7 +409,7 @@ createApp({
       if (!this.addee) return;
 
       this.sending = true;
-      this.members.push(this.addee)
+      this.members.push('https://id.inrupt.com/' + this.addee);
 
       await this.$graffiti.patch(
         {
