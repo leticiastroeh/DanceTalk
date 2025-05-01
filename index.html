@@ -226,7 +226,7 @@
                                     :class="{mine : object.actor===$graffitiSession.value.actor}"
                                 >
                                     <div v-if="object.actor!=$graffitiSession.value.actor">
-                                        <button class="author" @click="viewProfile(object.actor)">{{ object.actor }}</button>
+                                        <button class="author" @click="viewProfile(object.actor)">{{ parseUsername(object.actor) }}</button>
                                     </div>
                                     <span v-if="!editing || object.actor!==$graffitiSession.value.actor || objectURL!=object.url">{{ object.value.content }}</span>
                                     <div v-if="editing && object.actor===$graffitiSession.value.actor && objectURL==object.url" id="editTemplate">

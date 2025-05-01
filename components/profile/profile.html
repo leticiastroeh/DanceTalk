@@ -13,7 +13,7 @@
             }
         }"
         v-slot="{ objects: messageObjects }"
-        :channels="['https://' + $route.params.username + '.profilepicture.com']"
+        :channels="['https://' + 'https://id.inrupt.com/' + $route.params.username + '.profilepicture.com']"
     >
         <div v-for="object of messageObjects">
             <graffiti-object-to-file
@@ -37,7 +37,7 @@
     <div>
         <graffiti-discover
             v-slot="{ objects: messageObjects, isInitialPolling }"
-            :channels="['https://' + $route.params.username + '.profile.com']"
+            :channels="['https://' + 'https://id.inrupt.com/' + $route.params.username + '.profile.com']"
             :schema="{
                 properties: {
                     value: {

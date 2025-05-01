@@ -606,7 +606,7 @@ createApp({
     },
 
     async viewProfile(user) {
-      this.$router.push({ path: '/profile/' + user});
+      this.$router.push({ path: '/profile/' + this.parseUsername(user)});
     },
 
     setFileToUpload(event) {
@@ -673,6 +673,10 @@ createApp({
         );
         this.fileUrl = url;
       }
+    },
+
+    parseUsername(username) {
+      return username.split('.com/')[1];
     },
   },
 })
