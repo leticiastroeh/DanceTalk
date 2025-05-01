@@ -84,7 +84,7 @@
                 <router-view></router-view>
                 <div id="profilePage" v-if="showingProfile && $router.currentRoute.value.path=='/'">
                     <button id="back" @click="showProfile()"><img src="./icons/Back.svg"></button>
-                    <span id="username"><strong>{{$graffitiSession.value.actor}}</strong></span>
+                    <span id="username"><strong>{{ parseUsername($graffitiSession.value.actor) }}</strong></span>
                     
                     <graffiti-discover
                         :schema="graffitiFileSchema"
