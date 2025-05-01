@@ -658,8 +658,6 @@ createApp({
       }
     },
   },
-
-  components: { GraffitiObjectToFile },
 })
   .use(GraffitiPlugin, {
     graffiti: new GraffitiLocal(),
@@ -667,4 +665,5 @@ createApp({
   })
   .use(router)
   .component('my-menu', Menu)
+  .component('GraffitiObjectToFile', GraffitiObjectToFile)
   .mount("#app");

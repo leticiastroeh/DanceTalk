@@ -12,8 +12,8 @@
                     "@graffiti-garden/implementation-local": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-local@0.6.4/dist/browser/index.js",
                     "@graffiti-garden/implementation-remote": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-remote@0.6.2/dist/browser/index.js",
                     "@graffiti-garden/wrapper-vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-vue@0.7.2/dist/browser/plugin.mjs",
-                    "@graffiti-garden/wrapper-files": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-files@0.0.1/dist/browser/index.js",
-                    "@graffiti-garden/wrapper-files/vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-files@0.0.1/dist/vue/index.mjs"
+                    "@graffiti-garden/wrapper-files": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-files@0.0.2/dist/browser/index.js",
+                    "@graffiti-garden/wrapper-files/vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-files@0.0.2/dist/vue/index.mjs"
                 }
             }
         </script>
@@ -29,7 +29,6 @@
                 <template v-else>
                     <div class="logout">
                         <button class="profile" @click="showProfile()"><img src="./icons/User.svg">Profile</button>
-                        <!-- <router-link :to="`/profile/`" class="profile"><img src="./icons/User.svg">Profile</router-link> -->
                         <button id="logoutButton" @click="logout()">
                             <img src="./icons/Logout.svg">Log Out
                         </button>
@@ -83,7 +82,6 @@
 
             <div>
                 <router-view></router-view>
-                <!-- <div id="right" v-if="$router.currentRoute.value.path=='/'"> -->
                 <div id="profilePage" v-if="showingProfile && $router.currentRoute.value.path=='/'">
                     <button id="back" @click="showProfile()"><img src="./icons/Back.svg"></button>
                     <span id="username"><strong>{{$graffitiSession.value.actor}}</strong></span>
@@ -244,19 +242,11 @@
                                     <div class="plus" v-if="object.actor===$graffitiSession.value.actor">
                                         <button @click="openTools"><img src="./icons/More.svg"></button>
                                     </div>
-                                    <!-- <my-menu 
+                                    <my-menu 
                                         v-if="object.actor===$graffitiSession.value.actor"
                                         class="tools"
-                                        :buttons="[{name: 'Edit', click: isEditing(), params: [$graffitiSession.value, object.url, object.value.content]}, {name: 'Delete', click: deleteMessage, params: [$graffitiSession.value, object.url]}]"
-                                    ></my-menu> -->
-                                    <div v-if="object.actor===$graffitiSession.value.actor" class="myMenu tools">
-                                        <button @click="isEditing($graffitiSession.value, object.url, object.value.content)">
-                                            Edit
-                                        </button>
-                                        <button @click="deleteMessage($graffitiSession.value, object.url)">
-                                            Delete
-                                        </button>
-                                    </div>
+                                        :buttons="[{name: 'Edit', click: isEditing, params: [$graffitiSession.value, object.url, object.value.content]}, {name: 'Delete', click: deleteMessage, params: [$graffitiSession.value, object.url]}]"
+                                    ></my-menu>
                                 </li>
                             </ul>
                         </graffiti-discover>
