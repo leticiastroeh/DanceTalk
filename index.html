@@ -50,6 +50,7 @@
                 </form>
 
                 <graffiti-discover
+                    autopoll
                     v-if="$graffitiSession.value"
                     v-slot="{ objects: messageObjects, isInitialPolling }"
                     :channels="channels"
@@ -206,6 +207,7 @@
 
                     <div id="messageBar" :class="{ empty: !currentGroup }" v-if="!showingProfile && $router.currentRoute.value.path=='/'">
                         <graffiti-discover
+                            autopoll
                             v-if="currentGroup"
                             id="messageList"
                             v-slot="{ objects: messageObjects, isInitialPolling }"
@@ -259,7 +261,7 @@
                     <div id="typing" v-if="!showingProfile && $router.currentRoute.value.path=='/' && $graffitiSession.value && currentGroup">
                         <my-menu 
                             class="sendTools"
-                            :buttons="[{name: 'File', click: console.log, params: ['send a file']}]"
+                            :buttons="[{name: 'File', click: sendFile, params: [currentGroup]}]"
                         ></my-menu>
                         <form @submit.prevent="sendMessage($graffitiSession.value)">
                             <fieldset id="textBar" :disabled="sending">

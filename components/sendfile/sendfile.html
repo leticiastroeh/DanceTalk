@@ -1,0 +1,43 @@
+<div id="foldersPage">
+    <button id="back" @click="$router.back()"><img src="./icons/Back.svg"></button>
+    <span id="filesTitle">Select Destination Location</span>
+    <button type="button" id="newFolder" @click="newFolderButtonHandler">
+        <img src="./icons/Plus.svg">
+    </button>
+    <div class="above" id="newFolderTemplate" v-if="foldering">
+        <input
+            type="text"
+            class="above"
+            v-model="newFolderName"
+            v-focus
+        />
+        <button class="above" @click="addFolder($route.params.groupid)">Add</button>
+        <button class="above" @click="cancelFoldering()">Cancel</button>
+    </div>
+    <graffiti-discover
+        :schema="{
+            properties: {
+                value: {
+                    required: ['name', 'describes'],
+                    properties: {
+                        name: { type: 'string' },
+                        describes: { type: 'string' },
+                    }
+                }
+            }
+        }"
+        v-slot="{ objects: messageObjects }"
+        :channels="['https://' + $route.params.groupid + '.folders.com']"
+    >
+        <div id="folderSection">
+            <div v-for="object of messageObjects">
+                <div class="folder">
+                    <button @click="selectFolder">
+                        <img src="./icons/Folder.svg">
+                        <div>{{ object.value.name }}</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </graffiti-discover>
+</div>

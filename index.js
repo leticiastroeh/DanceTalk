@@ -10,6 +10,7 @@ import { GraffitiObjectToFile } from "@graffiti-garden/wrapper-files/vue";
 import { Profile } from "./components/profile/profile.js";
 import { FoldersPage } from "./components/folders/folders.js";
 import { MediasPage } from "./components/medias/medias.js";
+import { SendFilePage } from "./components/sendfile/sendfile.js";
 
 const Menu = {
   props: ['buttons'],
@@ -28,6 +29,7 @@ const router = createRouter({
       { path: "/profile/:username", component: Profile },
       { path: "/files/:groupid", component: FoldersPage },
       { path: "/files/:groupid/folder/:foldername", component: MediasPage },
+      { path: "/sendfile/:groupid", component: SendFilePage },
     ],
   });
 
@@ -101,6 +103,7 @@ createApp({
     Profile: defineAsyncComponent(Profile),
     FoldersPage: defineAsyncComponent(FoldersPage),
     MediasPage: defineAsyncComponent(MediasPage),
+    SendFilePage: defineAsyncComponent(SendFilePage),
   },
 
   methods: {
@@ -688,6 +691,11 @@ createApp({
     parseUsername(username) {
       return username.split('.com/')[1];
     },
+
+    sendFile(groupid) {
+      this.openSendTools();
+      this.$router.push({ path: '/sendfile/' + groupid});
+    }
   },
 })
   .use(GraffitiPlugin, {
