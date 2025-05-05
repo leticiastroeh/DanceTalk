@@ -500,6 +500,31 @@ h1 {
     cursor: pointer;
 }
 
+#mediaPage {
+    background-color: #F9F9F9;
+    height: 95vh;
+    overflow: auto;
+    padding: 20px;
+    margin-top: -7px;
+}
+
+#mediaPage > #back {
+    width: min-content;
+    border: none;
+    cursor: pointer;
+    background-color: #F9F9F9;
+    margin-top: 5px;
+}
+
+#mediaPage > #back > img {
+    height: 20px;
+    cursor: pointer;
+}
+
+#mediaPage > #path {
+    font-size: 22px;
+}
+
 #profilePicture {
     display: block;
     width: min(260px, 40vw - 40px);

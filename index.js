@@ -9,6 +9,7 @@ import { fileToGraffitiObject, graffitiFileSchema } from "@graffiti-garden/wrapp
 import { GraffitiObjectToFile } from "@graffiti-garden/wrapper-files/vue";
 import { Profile } from "./components/profile/profile.js";
 import { FoldersPage } from "./components/folders/folders.js";
+import { MediasPage } from "./components/medias/medias.js";
 
 const Menu = {
   props: ['buttons'],
@@ -26,6 +27,7 @@ const router = createRouter({
     routes: [
       { path: "/profile/:username", component: Profile },
       { path: "/files/:groupid", component: FoldersPage },
+      { path: "/files/:groupid/folder/:foldername", component: MediasPage },
     ],
   });
 
@@ -98,6 +100,7 @@ createApp({
   components: {
     Profile: defineAsyncComponent(Profile),
     FoldersPage: defineAsyncComponent(FoldersPage),
+    MediasPage: defineAsyncComponent(MediasPage),
   },
 
   methods: {

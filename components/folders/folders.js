@@ -39,7 +39,7 @@ export async function FoldersPage() {
         },
 
         enterFolder(groupid, name) {
-          console.log('here');
+          this.$router.push({ path: '/files/' + groupid + '/folder/' + name});
         }
 
       },
