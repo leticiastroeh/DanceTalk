@@ -1,0 +1,40 @@
+<div id="mediaPage">
+    <button id="back" @click="$router.back()"><img src="./icons/Back.svg"></button>
+    <span id="filesTitle">Files</span><span id="path"> / {{$route.params.folder}}</span>
+    <graffiti-discover
+        :schema="{
+            properties: {
+                value: {
+                    required: ['name'],
+                    properties: {
+                        name: { type: 'string' },
+                    }
+                }
+            }
+        }"
+        v-slot="{ objects: messageObjects }"
+        :channels="['https://' + $route.params.groupid + '.media.com/' + $route.params.folder]"
+    >
+        <div v-for="object of messageObjects">
+            <div class="folder" v-if="object.value.kind=='image'">
+                <graffiti-object-to-file
+                    :object="object"
+                    v-slot="{ file, fileDataUrl }"
+                >
+                    <p v-if="file === undefined">Loading the object {{object}}</p>
+                    <p v-else-if="file === null">File not found.</p>
+                    <template v-else>
+                        <p v-if="file.type.startsWith('image/')">
+                            <img
+                                id="mediaImage"
+                                :src="fileDataUrl"
+                                alt="Uploaded Image"
+                            />
+                        </p>
+                    </template>
+                </graffiti-object-to-file>
+                <div>{{ object.value.name }}</div>
+            </div>
+        </div>
+    </graffiti-discover>
+</div>

@@ -117,6 +117,48 @@ fieldset {
     z-index: 2;
 }
 
+#newFolder {
+    width: min-content;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    z-index: 2;
+    background-color: #F9F9F9;
+}
+
+#newFolder > img {
+    height: 20px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+#folderSection {
+    display: inline;
+}
+
+.folder > button {
+    margin-top: 40px;
+    width: min-content;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+    cursor: pointer;
+    z-index: 2;
+    background-color: #F9F9F9;
+    font-size: 16px;
+}
+
+.folder > button > img {
+    height: 80px;
+    cursor: pointer;
+    z-index: 2;
+}
+
 #send {
     border: none;
     cursor: pointer;
@@ -198,7 +240,7 @@ fieldset {
     color: white;
     background-color: #1B7A6D;
     height: 25px;
-    width: 65px;
+    width: min-content;
     cursor: pointer;
     z-index: 3;
 }
@@ -337,6 +379,12 @@ h1 {
     width: 100px;
 }
 
+#newFolderTemplate {
+    position: absolute !important;
+    top: 15px;
+    right: 70px;
+}
+
 .logout > button > img {
     width: 13px;
     margin-right: 5px;
@@ -431,6 +479,27 @@ h1 {
     cursor: pointer;
 }
 
+#foldersPage {
+    background-color: #F9F9F9;
+    height: 95vh;
+    overflow: auto;
+    padding: 20px;
+    margin-top: -7px;
+}
+
+#foldersPage > #back {
+    width: min-content;
+    border: none;
+    cursor: pointer;
+    background-color: #F9F9F9;
+    margin-top: 5px;
+}
+
+#foldersPage > #back > img {
+    height: 20px;
+    cursor: pointer;
+}
+
 #profilePicture {
     display: block;
     width: min(260px, 40vw - 40px);
@@ -447,9 +516,19 @@ h1 {
 }
 
 #username {
-    font-size: 24px;
+    font-size: 30px;
     display: inline-block;
     margin-left: 10px;
+    color: #1B7A6D;
+    font-weight: bold;
+}
+
+#filesTitle {
+    font-size: 30px;
+    display: inline-block;
+    margin-left: 10px;
+    color: #1B7A6D;
+    font-weight: bold;
 }
 
 li > input[type="text"] {

@@ -196,7 +196,12 @@
                     <my-menu 
                         v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor"
                         class="groupTools"
-                        :buttons="[{name: 'Rename', click: renameButtonHandler, params: [$graffitiSession.value]}, {name: 'Add Participant', click: addParticipantButtonHandler, params: []}, {name: 'Delete', click: deleteGroup, params: [$graffitiSession.value, currentGroupURL]}]"
+                        :buttons="[{name: 'Rename', click: renameButtonHandler, params: [$graffitiSession.value]}, {name: 'Add Participant', click: addParticipantButtonHandler, params: []}, {name: 'Delete', click: deleteGroup, params: [$graffitiSession.value, currentGroupURL]}, {name: 'Files', click: enterFoldersPage, params: [currentGroup]}]"
+                    ></my-menu>
+                    <my-menu 
+                        v-if="$graffitiSession.value && currentGroupAdmin!==$graffitiSession.value.actor"
+                        class="groupTools"
+                        :buttons="[{name: 'Files', click: enterFoldersPage, params: [currentGroup]}]"
                     ></my-menu>
 
                     <div id="messageBar" :class="{ empty: !currentGroup }" v-if="!showingProfile && $router.currentRoute.value.path=='/'">

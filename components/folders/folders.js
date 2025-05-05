@@ -1,0 +1,51 @@
+export async function FoldersPage() {
+    return {
+      data() {
+        return {
+          foldering: false,
+          newFolderName: "",
+        };
+      },
+
+      methods: {
+        newFolderButtonHandler() {
+          this.foldering = !this.foldering;
+          this.newFolderName = "";
+        },
+
+        cancelFoldering() {
+          this.foldering = false;
+          this.newFolderName = "";
+          return;
+        },
+
+        async addFolder(groupid) {
+          if (!this.newFolderName) return;
+          console.log(this.$graffitiSession.value);
+    
+          await this.$graffiti.put(
+            {
+              value: {
+                name: this.newFolderName,
+                describes: 'https://' + groupid + '.folders.com/' + this.newFolderName,
+              },
+              channels: ['https://' + groupid + '.folders.com'],
+            },
+            session,
+          );
+    
+          this.newFolderName = null;
+          this.foldering = false;
+        },
+
+        enterFolder(groupid, name) {
+          console.log('here');
+        }
+
+      },
+
+      template: await fetch("./components/folders/folders.html").then((r) => r.text()),
+    };
+    
+  }
+  

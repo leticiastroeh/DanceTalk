@@ -8,7 +8,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import { fileToGraffitiObject, graffitiFileSchema } from "@graffiti-garden/wrapper-files";
 import { GraffitiObjectToFile } from "@graffiti-garden/wrapper-files/vue";
 import { Profile } from "./components/profile/profile.js";
-// import { Menu } from "./components/menu/menu.js";
+import { FoldersPage } from "./components/folders/folders.js";
 
 const Menu = {
   props: ['buttons'],
@@ -25,6 +25,7 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: [
       { path: "/profile/:username", component: Profile },
+      { path: "/files/:groupid", component: FoldersPage },
     ],
   });
 
@@ -96,6 +97,7 @@ createApp({
 
   components: {
     Profile: defineAsyncComponent(Profile),
+    FoldersPage: defineAsyncComponent(FoldersPage),
   },
 
   methods: {
@@ -673,6 +675,11 @@ createApp({
         );
         this.fileUrl = url;
       }
+    },
+
+    enterFoldersPage(group) {
+      document.querySelector(".groupTools").style.display = "none";
+      this.$router.push({ path: '/files/' + group});
     },
 
     parseUsername(username) {
