@@ -136,19 +136,42 @@ fieldset {
     z-index: 2;
 }
 
-#folderSection {
-    display: inline;
-}
-
-.folder > button {
-    margin-top: 40px;
-    width: min-content;
+#sendFileButton {
     border: none;
     cursor: pointer;
     z-index: 2;
     position: absolute;
+    right: 20px;
+    top: 60px;
     cursor: pointer;
-    z-index: 2;
+    background-color: #1B7A6D;
+    color: white;
+    height: 40px;
+    width: 80px;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+#folderSection {
+    display: block;
+}
+
+#folderSection > div {
+    display: inline;
+}
+
+.folder {
+    display: inline;
+}
+
+.folder > button {
+    display: inline;
+    margin: 10px;
+    margin-top: 40px;
+    width: min-content;
+    border: none;
+    cursor: pointer;
+    cursor: pointer;
     background-color: #F9F9F9;
     font-size: 16px;
 }
@@ -156,7 +179,33 @@ fieldset {
 .folder > button > img {
     height: 80px;
     cursor: pointer;
-    z-index: 2;
+}
+
+#fileObject {
+    display: inline-block;
+    margin: 20px;
+}
+
+.fileObject {
+    display: inline;
+}
+
+#fileSection {
+    display: block;
+    margin-top: 40px;
+}
+
+.fileName {
+    display: block;
+    width: 150px;
+    overflow: auto;
+}
+
+#mediaImage {
+    display: inline;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
 }
 
 #send {
@@ -640,4 +689,41 @@ li > input[type="text"] {
     border: none;
     cursor: pointer;
     height: 30px;
+}
+
+#file-sending-input {
+    visibility: hidden;
+}
+
+@keyframes opengroup {
+    from {transform: scale(0, 0);}
+    to {transform: scale(1, 1);}
+  }
+
+.groupTools {
+    animation-name: opengroup;
+	animation-duration: 0.2s;
+	transform-origin: 250px 25px;
+}
+
+@keyframes open {
+    from {transform: scale(0, 0);}
+    to {transform: scale(1, 1);}
+  }
+
+.tools {
+    animation-name: open;
+	animation-duration: 0.2s;
+	transform-origin: 50px 10px;
+}
+
+@keyframes sendopen {
+    from {transform: scale(0, 0);}
+    to {transform: scale(1, 1);}
+  }
+
+.sendTools {
+    animation-name: sendopen;
+	animation-duration: 0.2s;
+	transform-origin: 0px 30px;
 }

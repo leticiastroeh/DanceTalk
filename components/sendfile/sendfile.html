@@ -4,6 +4,9 @@
     <button type="button" id="newFolder" @click="newFolderButtonHandler">
         <img src="./icons/Plus.svg">
     </button>
+    <button type="button" id="newFolder" @click="sendFile()">
+        Send
+    </button>
     <div class="above" id="newFolderTemplate" v-if="foldering">
         <input
             type="text"
@@ -32,8 +35,9 @@
         <div id="folderSection">
             <div v-for="object of messageObjects">
                 <div class="folder">
-                    <button @click="selectFolder">
-                        <img src="./icons/Folder.svg">
+                    <button @click="selectFolder(object.value.name)">
+                        <img v-if="object.value.name != selected" src="./icons/Folder.svg">
+                        <img v-if="object.value.name == selected" src="./icons/SelectedFolder.svg">
                         <div>{{ object.value.name }}</div>
                     </button>
                 </div>

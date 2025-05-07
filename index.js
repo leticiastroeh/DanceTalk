@@ -96,6 +96,10 @@ createApp({
       graffitiFileSchema,
       renaming: false,
       editing: false,
+      foldering: false,
+      newFolderName: "",
+      selected: "",
+      sendingFile: false,
     };
   },
 
@@ -694,8 +698,71 @@ createApp({
 
     sendFile(groupid) {
       this.openSendTools();
-      this.$router.push({ path: '/sendfile/' + groupid});
-    }
+      // this.$router.push({ path: '/sendfile/' + groupid});
+      this.sendingFile = true;
+      const chooseButton = document.querySelector("#file-sending-input");
+      chooseButton.click();
+    },
+
+    newFolderButtonHandler() {
+      this.foldering = !this.foldering;
+      this.newFolderName = "";
+    },
+
+    cancelFoldering() {
+      this.foldering = false;
+      this.newFolderName = "";
+      return;
+    },
+
+    async addFolder(groupid) {
+      if (!this.newFolderName) return;
+
+      await this.$graffiti.put(
+        {
+          value: {
+            name: this.newFolderName,
+            describes: 'https://' + groupid + '.folders.com/' + this.newFolderName,
+          },
+          channels: ['https://' + groupid + '.folders.com'],
+        },
+        this.$graffitiSession.value,
+      );
+
+      this.newFolderName = null;
+      this.foldering = false;
+    },
+
+    selectFolder(name) {
+      this.selected = name;
+    },
+
+    setFileToSubmit(event) {
+      const target = event.target;
+      if (!target.files?.length) return;
+      this.fileToSubmit = target.files[0];
+    },
+
+    async submitFile(groupid, session) {
+      if (!this.fileToSubmit) return;
+      if (!this.selected) return;
+
+      const destination = 'https://' + groupid + '.media.com/' + this.selected;
+
+      const object = await fileToGraffitiObject(
+        this.fileToSubmit,
+      );
+      object.channels = [destination, this.currentChannel];
+      const url = await this.$graffiti.put(
+        object,
+        session,
+      );
+      console.log(url);
+      console.log(object);
+      this.sendingFile = false;
+      this.fileToSubmit = null;
+      this.selected = "";
+    },
   },
 })
   .use(GraffitiPlugin, {

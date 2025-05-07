@@ -4,6 +4,7 @@ export async function SendFilePage() {
         return {
           foldering: false,
           newFolderName: "",
+          selected: "",
         };
       },
 
@@ -38,8 +39,8 @@ export async function SendFilePage() {
           this.foldering = false;
         },
 
-        selectFolder(ev) {
-          console.log(ev.target);
+        selectFolder(name) {
+          this.selected = name;
         }
 
       },

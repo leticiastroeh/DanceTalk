@@ -83,6 +83,53 @@
 
             <div>
                 <router-view></router-view>
+                <div id="foldersPage" v-if="sendingFile && $router.currentRoute.value.path=='/'">
+                    <button id="back" @click="() => {sendingFile = false; selected = ''; fileToSubmit = null}"><img src="./icons/Back.svg"></button>
+                    <span id="filesTitle">Select Destination Location</span>
+                    <button type="button" id="newFolder" @click="newFolderButtonHandler">
+                        <img src="./icons/Plus.svg">
+                    </button>
+                    <button id="sendFileButton" @click="submitFile(currentGroup, $graffitiSession.value)">
+                        Send
+                    </button>
+                    <div class="above" id="newFolderTemplate" v-if="foldering">
+                        <input
+                            type="text"
+                            class="above"
+                            v-model="newFolderName"
+                            v-focus
+                        />
+                        <button class="above" @click="addFolder(currentGroup)">Add</button>
+                        <button class="above" @click="cancelFoldering()">Cancel</button>
+                    </div>
+                    <graffiti-discover
+                        :schema="{
+                            properties: {
+                                value: {
+                                    required: ['name', 'describes'],
+                                    properties: {
+                                        name: { type: 'string' },
+                                        describes: { type: 'string' },
+                                    }
+                                }
+                            }
+                        }"
+                        v-slot="{ objects: messageObjects }"
+                        :channels="['https://' + currentGroup + '.folders.com']"
+                    >
+                        <div id="folderSection">
+                            <div v-for="object of messageObjects">
+                                <div class="folder">
+                                    <button @click="selectFolder(object.value.name)">
+                                        <img v-if="object.value.name != selected" src="./icons/Folder.svg">
+                                        <img v-if="object.value.name == selected" src="./icons/SelectedFolder.svg">
+                                        <div>{{ object.value.name }}</div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </graffiti-discover>
+                </div>
                 <div id="profilePage" v-if="showingProfile && $router.currentRoute.value.path=='/'">
                     <button id="back" @click="showProfile()"><img src="./icons/Back.svg"></button>
                     <span id="username"><strong>{{ parseUsername($graffitiSession.value.actor) }}</strong></span>
@@ -171,8 +218,8 @@
                         <button class="profileButton" @click="setEditingProfile()">Edit</button>
                     </div>
                 </div>
-                <div id="right" v-if="!showingProfile && $router.currentRoute.value.path=='/'"></div>
-                    <div class="groupName" v-if="!showingProfile && $router.currentRoute.value.path=='/' && currentGroup && $graffitiSession.value"><span v-if="!renaming">{{currentGroup}}</span></div>
+                <div id="right" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/'"></div>
+                    <div class="groupName" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/' && currentGroup && $graffitiSession.value"><span v-if="!renaming">{{currentGroup}}</span></div>
                     
                     <div class="addForm above" v-if="adding">
                         <input class="above" type="text" v-model="addee"/>
@@ -191,8 +238,8 @@
                         <button class="above" @click="cancelRename()">Cancel</button>
                     </div>
                     
-                    <div v-if="currentGroup" v-if="!showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor" class="plusBig">
-                        <button @click="openGroupTools" v-if="!showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor"><img src="./icons/More.svg"></button>
+                    <div v-if="currentGroup" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor" class="plusBig">
+                        <button @click="openGroupTools" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor"><img src="./icons/More.svg"></button>
                     </div>
                     <my-menu 
                         v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor"
@@ -205,7 +252,7 @@
                         :buttons="[{name: 'Files', click: enterFoldersPage, params: [currentGroup]}]"
                     ></my-menu>
 
-                    <div id="messageBar" :class="{ empty: !currentGroup }" v-if="!showingProfile && $router.currentRoute.value.path=='/'">
+                    <div id="messageBar" :class="{ empty: !currentGroup }" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/'">
                         <graffiti-discover
                             autopoll
                             v-if="currentGroup"
@@ -258,11 +305,19 @@
                             </ul>
                         </graffiti-discover>
                     </div>
-                    <div id="typing" v-if="!showingProfile && $router.currentRoute.value.path=='/' && $graffitiSession.value && currentGroup">
+                    <div id="typing" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/' && $graffitiSession.value && currentGroup">
                         <my-menu 
                             class="sendTools"
                             :buttons="[{name: 'File', click: sendFile, params: [currentGroup]}]"
                         ></my-menu>
+                        <input
+                            id="file-sending-input"
+                            type="file"
+                            class="buttonInside"
+                            accept="*"
+                            @change="setFileToSubmit"
+                        />
+                        <input type="submit" class="profileButton" value="Upload" />
                         <form @submit.prevent="sendMessage($graffitiSession.value)">
                             <fieldset id="textBar" :disabled="sending">
                                 <button type="button" id="sendOthers" @click="openSendTools">

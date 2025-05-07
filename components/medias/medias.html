@@ -13,27 +13,29 @@
             }
         }"
         v-slot="{ objects: messageObjects }"
-        :channels="['https://' + $route.params.groupid + '.media.com/' + $route.params.folder]"
+        :channels="['https://' + $route.params.groupid + '.media.com/' + $route.params.foldername]"
     >
-        <div v-for="object of messageObjects">
-            <div class="folder" v-if="object.value.kind=='image'">
-                <graffiti-object-to-file
-                    :object="object"
-                    v-slot="{ file, fileDataUrl }"
-                >
-                    <p v-if="file === undefined">Loading the object {{object}}</p>
-                    <p v-else-if="file === null">File not found.</p>
-                    <template v-else>
-                        <p v-if="file.type.startsWith('image/')">
-                            <img
-                                id="mediaImage"
-                                :src="fileDataUrl"
-                                alt="Uploaded Image"
-                            />
-                        </p>
-                    </template>
-                </graffiti-object-to-file>
-                <div>{{ object.value.name }}</div>
+        <div id="fileSection">
+            <div id="fileObject" v-for="object of messageObjects">
+                <div class="fileObject">
+                    <graffiti-object-to-file
+                        :object="object"
+                        v-slot="{ file, fileDataUrl }"
+                    >
+                        <span v-if="file === undefined">Loading the object {{object}}</span>
+                        <span v-else-if="file === null">File not found.</span>
+                        <template v-else>
+                            <span v-if="file.type.startsWith('image/')">
+                                <img
+                                    id="mediaImage"
+                                    :src="fileDataUrl"
+                                    alt="Uploaded Image"
+                                />
+                            </span>
+                        </template>
+                    </graffiti-object-to-file>
+                    <div class="fileName">{{ object.value.name }}</div>
+                </div>
             </div>
         </div>
     </graffiti-discover>
