@@ -727,3 +727,20 @@ li > input[type="text"] {
 	animation-duration: 0.2s;
 	transform-origin: 0px 30px;
 }
+
+@keyframes slide {
+    from {transform: translate(-10px, 0);}
+    to {transform: translate(0, 0);}
+  }
+
+.myProfile {
+    animation-name: slide;
+    animation-duration: 0.2s;
+    /* transform-origin: 0px, 0px; */
+}
+
+.sentImage {
+    max-width: 300px;
+    height: 200px;
+    overflow: hidden;
+}

@@ -752,11 +752,24 @@ createApp({
       const object = await fileToGraffitiObject(
         this.fileToSubmit,
       );
-      object.channels = [destination, this.currentChannel];
-      const url = await this.$graffiti.put(
+      object.channels = [destination];
+      const { url } = await this.$graffiti.put(
         object,
         session,
       );
+
+      await this.$graffiti.put(
+        {
+          value: {
+            content: "",
+            published: Date.now(),
+            image: url,
+          },
+          channels: [this.currentChannel],
+        },
+        session,
+      );
+
       console.log(url);
       console.log(object);
       this.sendingFile = false;

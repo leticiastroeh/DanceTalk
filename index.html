@@ -130,7 +130,7 @@
                         </div>
                     </graffiti-discover>
                 </div>
-                <div id="profilePage" v-if="showingProfile && $router.currentRoute.value.path=='/'">
+                <div id="profilePage" class="myProfile" v-if="showingProfile && $router.currentRoute.value.path=='/'">
                     <button id="back" @click="showProfile()"><img src="./icons/Back.svg"></button>
                     <span id="username"><strong>{{ parseUsername($graffitiSession.value.actor) }}</strong></span>
                     
@@ -265,7 +265,8 @@
                                         required: ['content', 'published'],
                                         properties: {
                                             content: { type: 'string' },
-                                            published: { type: 'number' }
+                                            published: { type: 'number' },
+                                            image: { type: 'string' },
                                         }
                                     }
                                 }
@@ -282,7 +283,31 @@
                                     <div v-if="object.actor!=$graffitiSession.value.actor">
                                         <button class="author" @click="viewProfile(object.actor)">{{ parseUsername(object.actor) }}</button>
                                     </div>
-                                    <span v-if="!editing || object.actor!==$graffitiSession.value.actor || objectURL!=object.url">{{ object.value.content }}</span>
+                                    <span v-if="!object.value.image && (!editing || object.actor!==$graffitiSession.value.actor || objectURL!=object.url)">{{ object.value.content }}</span>
+                                    <div v-if="object.value.image && (!editing || object.actor!==$graffitiSession.value.actor || objectURL!=object.url)">
+                                        <graffiti-get
+                                            :url="object.value.image"
+                                            :schema="graffitiFileSchema"
+                                            v-slot="{ object: objectImage }"
+                                        >
+                                            <graffiti-object-to-file
+                                                :object="objectImage"
+                                                v-slot="{ file, fileDataUrl }"
+                                            >
+                                                <span v-if="file === undefined">Loading</span>
+                                                <span v-else-if="file === null">File not found.</span>
+                                                <template v-else>
+                                                    <span v-if="file.type.startsWith('image/')">
+                                                        <img
+                                                            class="sentImage"
+                                                            :src="fileDataUrl"
+                                                            alt="Uploaded Image"
+                                                        />
+                                                    </span>
+                                                </template>
+                                            </graffiti-object-to-file>
+                                        </graffiti-get>
+                                    </div>
                                     <div v-if="editing && object.actor===$graffitiSession.value.actor && objectURL==object.url" id="editTemplate">
                                         <input
                                             type="text"
