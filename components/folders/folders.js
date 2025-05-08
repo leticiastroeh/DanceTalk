@@ -31,7 +31,7 @@ export async function FoldersPage() {
               },
               channels: ['https://' + groupid + '.folders.com'],
             },
-            session,
+            this.$graffitiSession.value,
           );
     
           this.newFolderName = null;

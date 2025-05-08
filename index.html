@@ -238,8 +238,8 @@
                         <button class="above" @click="cancelRename()">Cancel</button>
                     </div>
                     
-                    <div v-if="currentGroup" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor" class="plusBig">
-                        <button @click="openGroupTools" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/' && currentGroupAdmin===$graffitiSession.value.actor"><img src="./icons/More.svg"></button>
+                    <div v-if="currentGroup" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/'" class="plusBig">
+                        <button @click="openGroupTools" v-if="!sendingFile && !showingProfile && $router.currentRoute.value.path=='/'"><img src="./icons/More.svg"></button>
                     </div>
                     <my-menu 
                         v-if="$graffitiSession.value && currentGroupAdmin===$graffitiSession.value.actor"
