@@ -744,3 +744,8 @@ li > input[type="text"] {
     height: 200px;
     overflow: hidden;
 }
+
+.loading {
+    list-style-type: none;
+    margin-top: 20px;
+}

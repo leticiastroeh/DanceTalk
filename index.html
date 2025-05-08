@@ -69,7 +69,7 @@
                     }"
                 >
                     <ul id="there">
-                        <li v-if="isInitialPolling">Loading...</li>
+                        <li class="loading" v-if="isInitialPolling">Loading...</li>
                         <li
                             v-for="object of messageObjects.filter(el => el.value.object.members.includes($graffitiSession.value.actor))"
                             :key="object.url"
@@ -273,7 +273,7 @@
                             }"
                         >
                             <ul id="here">
-                                <li v-if="isInitialPolling">Loading...</li>
+                                <li class="loading" v-if="isInitialPolling">Loading...</li>
                                 <li
                                     v-for="object of messageObjects.sort((a, b) => a.value.published - b.value.published)"
                                     :key="object.url"
