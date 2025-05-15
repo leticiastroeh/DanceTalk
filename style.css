@@ -305,6 +305,10 @@ fieldset {
     cursor: pointer;
 }
 
+.author:hover {
+    text-decoration: underline;
+}
+
 .group {
     list-style-type: none;
     padding: 10px;
